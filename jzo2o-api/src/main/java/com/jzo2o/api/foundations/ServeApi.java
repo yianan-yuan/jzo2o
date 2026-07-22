@@ -14,4 +14,9 @@ public interface ServeApi {
     @GetMapping("/{id}")
     ServeAggregationResDTO findById(@PathVariable("id") Long id);
 
+    @GetMapping("/search")
+    List<ServeAggregationResDTO> searchActiveServes(@RequestParam("cityCode") String cityCode,
+                                                     @RequestParam("keyword") String keyword,
+                                                     @RequestParam("limit") Integer limit);
+
 }
