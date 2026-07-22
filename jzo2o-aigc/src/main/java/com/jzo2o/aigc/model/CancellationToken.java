@@ -1,21 +1,27 @@
 package com.jzo2o.aigc.model;
 
 import java.util.Objects;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class CancellationToken {
 
-    private final AtomicBoolean cancelled = new AtomicBoolean();
-    private final ConcurrentLinkedQueue<Runnable> callbacks = new ConcurrentLinkedQueue<>();
+    private final Object lock = new Object();
+    private final List<Runnable> callbacks = new ArrayList<>();
+    private volatile boolean cancelled;
 
     public void cancel() {
-        if (!cancelled.compareAndSet(false, true)) {
-            return;
+        List<Runnable> callbacksToRun;
+        synchronized (lock) {
+            if (cancelled) {
+                return;
+            }
+            cancelled = true;
+            callbacksToRun = new ArrayList<>(callbacks);
+            callbacks.clear();
         }
         RuntimeException firstFailure = null;
-        Runnable callback;
-        while ((callback = callbacks.poll()) != null) {
+        for (Runnable callback : callbacksToRun) {
             try {
                 callback.run();
             } catch (RuntimeException error) {
@@ -32,18 +38,17 @@ public final class CancellationToken {
     }
 
     public boolean isCancelled() {
-        return cancelled.get();
+        return cancelled;
     }
 
     public void onCancel(Runnable callback) {
         Objects.requireNonNull(callback, "callback");
-        if (cancelled.get()) {
-            callback.run();
-            return;
+        synchronized (lock) {
+            if (!cancelled) {
+                callbacks.add(callback);
+                return;
+            }
         }
-        callbacks.add(callback);
-        if (cancelled.get() && callbacks.remove(callback)) {
-            callback.run();
-        }
+        callback.run();
     }
 }

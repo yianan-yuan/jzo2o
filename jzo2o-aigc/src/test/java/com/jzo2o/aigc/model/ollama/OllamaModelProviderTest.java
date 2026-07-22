@@ -12,6 +12,7 @@ import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.IOException;
 import java.net.Authenticator;
@@ -30,9 +31,11 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.SSLContext;
@@ -216,6 +219,56 @@ class OllamaModelProviderTest {
         assertThat(cleanupCalls).hasValue(1);
     }
 
+    @Test
+    @Timeout(value = 20, unit = TimeUnit.SECONDS)
+    void equalCallbacksRegisteredDuringCancellationEachRunExactlyOnce() throws Exception {
+        int registrationCount = 32;
+        ExecutorService raceExecutor = Executors.newFixedThreadPool(registrationCount + 1);
+        try {
+            for (int round = 0; round < 500; round++) {
+                CancellationToken token = new CancellationToken();
+                List<AtomicInteger> callbackCalls = new ArrayList<>();
+                List<Future<?>> registrations = new ArrayList<>();
+                CountDownLatch ready = new CountDownLatch(registrationCount + 1);
+                CountDownLatch start = new CountDownLatch(1);
+
+                for (int registration = 0; registration < registrationCount; registration++) {
+                    AtomicInteger calls = new AtomicInteger();
+                    callbackCalls.add(calls);
+                    Runnable callback = new EqualRunnable(calls);
+                    registrations.add(raceExecutor.submit(() -> {
+                        ready.countDown();
+                        start.await();
+                        token.onCancel(callback);
+                        return null;
+                    }));
+                }
+                Future<?> cancellation = raceExecutor.submit(() -> {
+                    ready.countDown();
+                    start.await();
+                    token.cancel();
+                    return null;
+                });
+
+                assertThat(ready.await(5, TimeUnit.SECONDS)).isTrue();
+                start.countDown();
+                for (Future<?> registration : registrations) {
+                    registration.get(5, TimeUnit.SECONDS);
+                }
+                cancellation.get(5, TimeUnit.SECONDS);
+
+                for (int registration = 0; registration < callbackCalls.size(); registration++) {
+                    assertThat(callbackCalls.get(registration))
+                            .as("callback %s in round %s", registration, round)
+                            .hasValue(1);
+                }
+            }
+        } finally {
+            raceExecutor.shutdownNow();
+            assertThat(raceExecutor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
     private void assertModelUnavailable(Runnable call) {
         assertThatThrownBy(call::run)
                 .isInstanceOfSatisfying(AigcException.class,
@@ -258,6 +311,29 @@ class OllamaModelProviderTest {
         @Override
         public JsonNode readTree(java.io.InputStream input) {
             return null;
+        }
+    }
+
+    private static final class EqualRunnable implements Runnable {
+        private final AtomicInteger calls;
+
+        private EqualRunnable(AtomicInteger calls) {
+            this.calls = calls;
+        }
+
+        @Override
+        public void run() {
+            calls.incrementAndGet();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof EqualRunnable;
+        }
+
+        @Override
+        public int hashCode() {
+            return 1;
         }
     }
 
