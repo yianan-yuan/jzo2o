@@ -364,7 +364,8 @@ class AiAssistantControllerTest {
         CandidateSelectionService selection = mock(CandidateSelectionService.class);
         ReplyGenerationService replyGenerator = mock(ReplyGenerationService.class);
         AssistantOrchestrator realOrchestrator = new AssistantOrchestrator(
-                sessionService, understanding, catalog, selection, replyGenerator, properties);
+                sessionService, understanding, catalog, selection, replyGenerator, properties,
+                mock(com.jzo2o.aigc.observability.AigcObservationLogger.class));
 
         controller(executor, scheduler, realOrchestrator).sendMessage("s1", request());
         scheduler.runDelay(30L);
@@ -384,7 +385,8 @@ class AiAssistantControllerTest {
         CandidateSelectionService selection = mock(CandidateSelectionService.class);
         ReplyGenerationService replyGenerator = mock(ReplyGenerationService.class);
         AssistantOrchestrator realOrchestrator = new AssistantOrchestrator(
-                sessionService, understanding, catalog, selection, replyGenerator, properties);
+                sessionService, understanding, catalog, selection, replyGenerator, properties,
+                mock(com.jzo2o.aigc.observability.AigcObservationLogger.class));
         SseEmitter emitter = controller(executor, scheduler, realOrchestrator).sendMessage("s1", request());
 
         ((Consumer<Throwable>) callback(emitter, "errorCallback"))

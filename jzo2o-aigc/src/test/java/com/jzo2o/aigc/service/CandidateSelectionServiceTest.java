@@ -9,6 +9,7 @@ import com.jzo2o.aigc.model.CancellationToken;
 import com.jzo2o.aigc.model.ModelMessage;
 import com.jzo2o.aigc.model.ModelProvider;
 import com.jzo2o.aigc.properties.AigcProperties;
+import com.jzo2o.aigc.security.SensitiveDataSanitizer;
 import com.jzo2o.api.foundations.dto.response.ServeAggregationResDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,8 @@ class CandidateSelectionServiceTest {
     void setUp() {
         properties.getModel().setTemperature(0.2D);
         service = new CandidateSelectionService(
-                provider, new ObjectMapper(), properties, new PromptFactory(new ObjectMapper()));
+                provider, new ObjectMapper(), properties,
+                new PromptFactory(new ObjectMapper(), new SensitiveDataSanitizer()));
     }
 
     @Test
@@ -176,6 +178,39 @@ class CandidateSelectionServiceTest {
                 .doesNotContain(injection);
         assertThat(messages.getValue().get(1).getRole()).isEqualTo("user");
         assertThat(messages.getValue().get(1).getContent()).contains(injection);
+    }
+
+    @Test
+    void shouldSanitizeProfileAndCandidateTextButPreserveAuthoritativeTypes() throws Exception {
+        String phone = "13800138000";
+        String idCard = "110101199001011234";
+        String bankCard = "6222020202020202";
+        long structuralId = 1234567890123456L;
+        DemandProfile profile = profile();
+        profile.setSummary("联系电话" + phone);
+        profile.getClarifiedFacts().put("证件", idCard);
+        ServeAggregationResDTO candidate = candidate(structuralId);
+        candidate.setServeItemName("服务说明" + bankCard);
+        candidate.setServeTypeName("类型电话" + phone);
+        when(provider.complete(anyList(), anyDouble(), any())).thenReturn("{\"selected\":[]}");
+
+        service.select(profile, Collections.singletonList(candidate), new CancellationToken());
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ModelMessage>> messages = ArgumentCaptor.forClass(List.class);
+        verify(provider).complete(messages.capture(), eq(0.2D), any());
+        String providerPayload = messages.getValue().get(1).getContent();
+        assertThat(providerPayload)
+                .contains("[PHONE]", "[ID_CARD]", "[BANK_CARD]")
+                .doesNotContain(phone, idCard, bankCard);
+        com.fasterxml.jackson.databind.JsonNode payload = new ObjectMapper().readTree(providerPayload);
+        assertThat(payload.at("/candidates/0/id").isIntegralNumber()).isTrue();
+        assertThat(payload.at("/candidates/0/id").longValue()).isEqualTo(structuralId);
+        assertThat(payload.at("/candidates/0/price").isNumber()).isTrue();
+        assertThat(payload.at("/candidates/0/unit").isIntegralNumber()).isTrue();
+        assertThat(profile.getSummary()).contains(phone);
+        assertThat(profile.getClarifiedFacts()).containsEntry("证件", idCard);
+        assertThat(candidate.getServeItemName()).contains(bankCard);
     }
 
     private void assertModelOutputInvalid(Runnable call) {

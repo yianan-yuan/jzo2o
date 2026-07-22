@@ -9,6 +9,7 @@ import com.jzo2o.aigc.model.CancellationToken;
 import com.jzo2o.aigc.model.ModelMessage;
 import com.jzo2o.aigc.model.ModelProvider;
 import com.jzo2o.aigc.properties.AigcProperties;
+import com.jzo2o.aigc.security.SensitiveDataSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +41,8 @@ class DemandUnderstandingServiceTest {
     void setUp() {
         properties.getModel().setTemperature(0.2D);
         service = new DemandUnderstandingService(
-                provider, new ObjectMapper(), properties, new PromptFactory(new ObjectMapper()));
+                provider, new ObjectMapper(), properties,
+                new PromptFactory(new ObjectMapper(), new SensitiveDataSanitizer()));
     }
 
     @Test
@@ -146,6 +148,24 @@ class DemandUnderstandingServiceTest {
                 .doesNotContain(injection);
         assertThat(messages.getValue().get(1).getRole()).isEqualTo("user");
         assertThat(messages.getValue().get(1).getContent()).isEqualTo(injection);
+    }
+
+    @Test
+    void shouldSanitizeSensitiveUserTextBeforeDemandProviderCall() {
+        String phone = "13800138000";
+        String idCard = "110101199001011234";
+        String bankCard = "6222020202020202";
+        when(provider.complete(anyList(), anyDouble(), any())).thenReturn(validDemandJson());
+
+        service.understand(session(), "电话" + phone + " 身份证" + idCard + " 银行卡" + bankCard,
+                new CancellationToken());
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ModelMessage>> messages = ArgumentCaptor.forClass(List.class);
+        verify(provider).complete(messages.capture(), eq(0.2D), any());
+        assertThat(messages.getValue().get(1).getContent())
+                .contains("[PHONE]", "[ID_CARD]", "[BANK_CARD]")
+                .doesNotContain(phone, idCard, bankCard);
     }
 
     @Test

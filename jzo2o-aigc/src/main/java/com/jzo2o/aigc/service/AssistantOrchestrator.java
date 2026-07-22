@@ -10,6 +10,8 @@ import com.jzo2o.aigc.domain.ServeUnitLabels;
 import com.jzo2o.aigc.exception.AigcErrorCode;
 import com.jzo2o.aigc.exception.AigcException;
 import com.jzo2o.aigc.model.CancellationToken;
+import com.jzo2o.aigc.observability.AigcObservation;
+import com.jzo2o.aigc.observability.AigcObservationLogger;
 import com.jzo2o.aigc.properties.AigcProperties;
 import com.jzo2o.aigc.stream.SseEventSink;
 import com.jzo2o.api.foundations.dto.response.ServeAggregationResDTO;
@@ -23,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -44,6 +47,7 @@ public class AssistantOrchestrator {
     private final CandidateSelectionService selection;
     private final ReplyGenerationService replyGenerator;
     private final AigcProperties properties;
+    private final AigcObservationLogger observationLogger;
 
     public void run(Long userId,
                     String sessionId,
@@ -54,8 +58,11 @@ public class AssistantOrchestrator {
         if (cancelled(cancellationToken)) {
             return;
         }
+        ObservationContext observation = startObservation(userId);
+        long loadStarted = System.nanoTime();
         AigcSession session = sessionService.loadOwned(userId, sessionId);
-        run(session, cityCode, message, sink, cancellationToken);
+        observation.observation.recordSessionLoadMillis(elapsedMillis(loadStarted));
+        runControlled(session, cityCode, message, sink, cancellationToken, observation);
     }
 
     public void run(AigcSession session,
@@ -66,28 +73,41 @@ public class AssistantOrchestrator {
         if (cancelled(cancellationToken)) {
             return;
         }
+        runControlled(session, cityCode, message, sink, cancellationToken,
+                startObservation(Objects.requireNonNull(session, "session").getUserId()));
+    }
+
+    private void runControlled(AigcSession session,
+                               String cityCode,
+                               String message,
+                               SseEventSink sink,
+                               CancellationToken cancellationToken,
+                               ObservationContext observation) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         session.updateCity(cityCode);
         sink.status("UNDERSTANDING");
         if (cancelled(cancellationToken)) {
             return;
         }
         try {
-            executeControlled(session, cityCode, message, sink, cancellationToken);
+            executeControlled(session, cityCode, message, sink, cancellationToken, observation);
         } catch (AigcException error) {
             if (cancelled(cancellationToken)) {
                 return;
             }
             if (error.getErrorCode() == AigcErrorCode.MODEL_UNAVAILABLE) {
-                fallback(session, cityCode, message, sink, cancellationToken);
+                fallback(session, cityCode, message, sink, cancellationToken, observation);
                 return;
             }
-            emitError(sink, error.getErrorCode(), cancellationToken);
+            emitError(sink, error.getErrorCode(), cancellationToken, observation);
         } catch (RuntimeException error) {
             if (cancelled(cancellationToken)) {
                 return;
             }
             log.error("Unexpected assistant orchestration failure", error);
-            emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE, cancellationToken);
+            emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE, cancellationToken, observation);
         }
     }
 
@@ -95,25 +115,34 @@ public class AssistantOrchestrator {
                                    String cityCode,
                                    String message,
                                    SseEventSink sink,
-                                   CancellationToken cancellationToken) {
+                                   CancellationToken cancellationToken,
+                                   ObservationContext observation) {
         if (cancelled(cancellationToken)) {
             return;
         }
-        DemandDecision decision = understanding.understand(session, message, cancellationToken);
+        observation.modelCalls++;
+        long demandStarted = System.nanoTime();
+        DemandDecision decision;
+        try {
+            decision = understanding.understand(session, message, cancellationToken);
+        } finally {
+            observation.observation.recordDemandExtractionMillis(elapsedMillis(demandStarted));
+        }
         if (cancelled(cancellationToken)) {
             return;
         }
         session.setDemandProfile(decision.getProfile());
         if (decision.isNeedsClarification()) {
-            finishClarification(session, message, decision.getClarifyingQuestion(), sink, cancellationToken);
+            finishClarification(session, message, decision.getClarifyingQuestion(), sink, cancellationToken,
+                    observation);
             return;
         }
         if (decision.getReferencedRecommendationIndex() != null) {
             explainReferenced(session, cityCode, message, decision.getReferencedRecommendationIndex(),
-                    sink, cancellationToken);
+                    sink, cancellationToken, observation);
             return;
         }
-        recommendByKeyword(session, cityCode, message, decision, sink, cancellationToken);
+        recommendByKeyword(session, cityCode, message, decision, sink, cancellationToken, observation);
     }
 
     private void recommendByKeyword(AigcSession session,
@@ -121,7 +150,8 @@ public class AssistantOrchestrator {
                                     String message,
                                     DemandDecision decision,
                                     SseEventSink sink,
-                                    CancellationToken cancellationToken) {
+                                    CancellationToken cancellationToken,
+                                    ObservationContext observation) {
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -130,25 +160,26 @@ public class AssistantOrchestrator {
             return;
         }
         List<ServeAggregationResDTO> candidates = activeCityCandidates(
-                searchCatalog(cityCode, decision.getProfile().getSearchKeyword(), 20), cityCode);
+                searchCatalog(cityCode, decision.getProfile().getSearchKeyword(), 20, observation), cityCode);
+        observation.candidateCount = candidates.size();
         if (cancelled(cancellationToken)) {
             return;
         }
         if (candidates.isEmpty()) {
-            finishNoMatch(session, message, NO_MATCH_TEXT, sink, cancellationToken);
+            finishNoMatch(session, message, NO_MATCH_TEXT, sink, cancellationToken, observation);
             return;
         }
-        List<SelectedService> selected = selection.select(
-                decision.getProfile(), candidates, cancellationToken);
+        observation.modelCalls++;
+        List<SelectedService> selected = selection.select(decision.getProfile(), candidates, cancellationToken);
         if (cancelled(cancellationToken)) {
             return;
         }
         List<RecommendationCardDTO> cards = cards(selected, candidates);
         if (cards.isEmpty()) {
-            finishNoMatch(session, message, NO_MATCH_TEXT, sink, cancellationToken);
+            finishNoMatch(session, message, NO_MATCH_TEXT, sink, cancellationToken, observation);
             return;
         }
-        streamRecommendation(session, message, cards, sink, cancellationToken);
+        streamRecommendation(session, message, cards, sink, cancellationToken, observation, false);
     }
 
     private void explainReferenced(AigcSession session,
@@ -156,17 +187,19 @@ public class AssistantOrchestrator {
                                    String message,
                                    int oneBasedIndex,
                                    SseEventSink sink,
-                                   CancellationToken cancellationToken) {
+                                   CancellationToken cancellationToken,
+                                   ObservationContext observation) {
         if (cancelled(cancellationToken)) {
             return;
         }
         List<Long> previousIds = session.getLastRecommendedServeIds();
         if (oneBasedIndex < 1 || oneBasedIndex > previousIds.size()) {
-            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken);
+            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken, observation);
             return;
         }
         Long serveId = previousIds.get(oneBasedIndex - 1);
-        ServeAggregationResDTO candidate = serveId == null ? null : findCatalog(serveId);
+        ServeAggregationResDTO candidate = serveId == null ? null : findCatalog(serveId, observation);
+        observation.candidateCount = candidate == null ? 0 : 1;
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -174,24 +207,26 @@ public class AssistantOrchestrator {
             if (candidate != null && ServeUnitLabels.labelOf(candidate.getUnit()) == null) {
                 logInvalidUnit(candidate);
             }
-            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken);
+            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken, observation);
             return;
         }
         List<RecommendationCardDTO> cards = cards(
                 Collections.singletonList(new SelectedService(serveId, "根据你刚才关注的服务继续说明")),
                 Collections.singletonList(candidate));
         if (cards.isEmpty()) {
-            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken);
+            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken, observation);
             return;
         }
-        streamRecommendation(session, message, cards, sink, cancellationToken);
+        streamRecommendation(session, message, cards, sink, cancellationToken, observation, false);
     }
 
     private void streamRecommendation(AigcSession session,
                                       String message,
                                       List<RecommendationCardDTO> cards,
                                       SseEventSink sink,
-                                      CancellationToken cancellationToken) {
+                                      CancellationToken cancellationToken,
+                                      ObservationContext observation,
+                                      boolean degraded) {
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -202,12 +237,13 @@ public class AssistantOrchestrator {
         StringBuilder reply = new StringBuilder();
         Consumer<String> delta = text -> {
             if (!cancelled(cancellationToken) && text != null && !text.trim().isEmpty()) {
-                sink.delta(text);
+                emitDelta(sink, text, observation);
                 if (!cancelled(cancellationToken)) {
                     reply.append(text);
                 }
             }
         };
+        observation.modelCalls++;
         replyGenerator.streamReply(session, cards, cancellationToken, delta);
         if (cancelled(cancellationToken)) {
             return;
@@ -221,13 +257,16 @@ public class AssistantOrchestrator {
             return;
         }
         sink.done(ConversationStage.RECOMMENDING, suggestedQuestions(cards.size()));
+        observeTerminal(observation, ConversationStage.RECOMMENDING.name(), null, degraded,
+                cards.size());
     }
 
     private void fallback(AigcSession session,
                           String cityCode,
                           String message,
                           SseEventSink sink,
-                          CancellationToken cancellationToken) {
+                          CancellationToken cancellationToken,
+                          ObservationContext observation) {
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -237,7 +276,9 @@ public class AssistantOrchestrator {
                 return;
             }
             List<ServeAggregationResDTO> candidates = activeCityCandidates(
-                    searchCatalog(cityCode, normalizeForFallback(message), HARD_RECOMMENDATION_LIMIT), cityCode);
+                    searchCatalog(cityCode, normalizeForFallback(message), HARD_RECOMMENDATION_LIMIT, observation),
+                    cityCode);
+            observation.candidateCount = candidates.size();
             if (cancelled(cancellationToken)) {
                 return;
             }
@@ -255,7 +296,7 @@ public class AssistantOrchestrator {
                 }
             }
             if (cards.isEmpty()) {
-                emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE, cancellationToken);
+                emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE, cancellationToken, observation);
                 return;
             }
             if (cancelled(cancellationToken)) {
@@ -265,7 +306,7 @@ public class AssistantOrchestrator {
             if (cancelled(cancellationToken)) {
                 return;
             }
-            sink.delta(FALLBACK_TEXT);
+            emitDelta(sink, FALLBACK_TEXT, observation);
             if (cancelled(cancellationToken)) {
                 return;
             }
@@ -278,14 +319,15 @@ public class AssistantOrchestrator {
                 return;
             }
             sink.done(ConversationStage.RECOMMENDING, suggestedQuestions(cards.size()));
+            observeTerminal(observation, ConversationStage.RECOMMENDING.name(), null, true, cards.size());
         } catch (AigcException error) {
-            emitError(sink, error.getErrorCode(), cancellationToken);
+            emitError(sink, error.getErrorCode(), cancellationToken, observation);
         } catch (RuntimeException error) {
             if (cancelled(cancellationToken)) {
                 return;
             }
             log.warn("Fallback service catalog failed", error);
-            emitError(sink, AigcErrorCode.SERVICE_CATALOG_UNAVAILABLE, cancellationToken);
+            emitError(sink, AigcErrorCode.SERVICE_CATALOG_UNAVAILABLE, cancellationToken, observation);
         }
     }
 
@@ -293,7 +335,8 @@ public class AssistantOrchestrator {
                                      String message,
                                      String question,
                                      SseEventSink sink,
-                                     CancellationToken cancellationToken) {
+                                     CancellationToken cancellationToken,
+                                     ObservationContext observation) {
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -301,7 +344,7 @@ public class AssistantOrchestrator {
         if (cancelled(cancellationToken)) {
             return;
         }
-        sink.delta(question);
+        emitDelta(sink, question, observation);
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -316,13 +359,15 @@ public class AssistantOrchestrator {
             return;
         }
         sink.done(ConversationStage.CLARIFYING, Collections.emptyList());
+        observeTerminal(observation, ConversationStage.CLARIFYING.name(), null, false, 0);
     }
 
     private void finishNoMatch(AigcSession session,
                                String message,
                                String text,
                                SseEventSink sink,
-                               CancellationToken cancellationToken) {
+                               CancellationToken cancellationToken,
+                               ObservationContext observation) {
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -330,7 +375,7 @@ public class AssistantOrchestrator {
         if (cancelled(cancellationToken)) {
             return;
         }
-        sink.delta(text);
+        emitDelta(sink, text, observation);
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -345,6 +390,7 @@ public class AssistantOrchestrator {
             return;
         }
         sink.done(ConversationStage.NO_MATCH, Collections.singletonList("可以换个需求描述吗？"));
+        observeTerminal(observation, ConversationStage.NO_MATCH.name(), null, false, 0);
     }
 
     private boolean finishRecommendationState(AigcSession session,
@@ -365,19 +411,28 @@ public class AssistantOrchestrator {
         return !cancelled(cancellationToken);
     }
 
-    private List<ServeAggregationResDTO> searchCatalog(String cityCode, String keyword, int limit) {
+    private List<ServeAggregationResDTO> searchCatalog(String cityCode,
+                                                        String keyword,
+                                                        int limit,
+                                                        ObservationContext observation) {
+        long queryStarted = System.nanoTime();
         try {
             return catalog.search(cityCode, keyword, limit);
         } catch (RuntimeException error) {
             throw new AigcException(AigcErrorCode.SERVICE_CATALOG_UNAVAILABLE);
+        } finally {
+            observation.observation.addServiceQueryMillis(elapsedMillis(queryStarted));
         }
     }
 
-    private ServeAggregationResDTO findCatalog(Long serveId) {
+    private ServeAggregationResDTO findCatalog(Long serveId, ObservationContext observation) {
+        long queryStarted = System.nanoTime();
         try {
             return catalog.findById(serveId);
         } catch (RuntimeException error) {
             throw new AigcException(AigcErrorCode.SERVICE_CATALOG_UNAVAILABLE);
+        } finally {
+            observation.observation.addServiceQueryMillis(elapsedMillis(queryStarted));
         }
     }
 
@@ -486,11 +541,65 @@ public class AssistantOrchestrator {
         return cancellationToken != null && cancellationToken.isCancelled();
     }
 
+    private ObservationContext startObservation(Long userId) {
+        return new ObservationContext(AigcObservation.start(
+                UUID.randomUUID().toString(),
+                userId,
+                properties.getModel().getProvider(),
+                properties.getModel().getModel()));
+    }
+
+    private void emitDelta(SseEventSink sink, String text, ObservationContext observation) {
+        sink.delta(text);
+        observation.observation.markFirstDelta();
+    }
+
+    private void observeTerminal(ObservationContext observation,
+                                 String terminalStage,
+                                 String errorCode,
+                                 boolean degraded,
+                                 int recommendationCount) {
+        boolean firstTerminal = observation.observation.finish(
+                terminalStage,
+                errorCode,
+                degraded,
+                observation.candidateCount,
+                recommendationCount,
+                observation.modelCalls,
+                observation.retries,
+                0L);
+        if (!firstTerminal) {
+            return;
+        }
+        try {
+            observationLogger.log(observation.observation);
+        } catch (RuntimeException ignored) {
+            log.warn("AIGC observation logger failed");
+        }
+    }
+
     private void emitError(SseEventSink sink,
                            AigcErrorCode errorCode,
-                           CancellationToken cancellationToken) {
+                           CancellationToken cancellationToken,
+                           ObservationContext observation) {
         if (!cancelled(cancellationToken)) {
             sink.error(errorCode, errorCode.getCode());
+            observeTerminal(observation, "ERROR", errorCode.getCode(), false, 0);
+        }
+    }
+
+    private long elapsedMillis(long startedNanos) {
+        return Math.max(0L, (System.nanoTime() - startedNanos) / 1_000_000L);
+    }
+
+    private static final class ObservationContext {
+        private final AigcObservation observation;
+        private int modelCalls;
+        private int retries;
+        private int candidateCount;
+
+        private ObservationContext(AigcObservation observation) {
+            this.observation = observation;
         }
     }
 }
