@@ -5,6 +5,7 @@
 ## 目录
 
 - `jzo2o-api`：微服务接口定义
+- `jzo2o-aigc`：独立 AIGC 微服务骨架
 - `jzo2o-customer`：用户与服务人员相关业务
 - `jzo2o-foundations`：服务、区域等基础业务
 - `jzo2o-framework`：公共框架组件
