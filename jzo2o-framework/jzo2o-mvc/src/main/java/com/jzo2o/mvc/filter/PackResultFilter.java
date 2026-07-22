@@ -27,7 +27,14 @@ public class PackResultFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         // 1.无需包装，放过拦截
-        String requestURI = ((HttpServletRequest) servletRequest).getRequestURI();
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        String accept = request.getHeader("Accept");
+        boolean eventStream = accept != null && accept.contains("text/event-stream");
+        if (eventStream) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+        String requestURI = request.getRequestURI();
         if (requestURI.contains(".") ||
                 requestURI.contains("/swagger") ||
                 requestURI.contains("/api-docs") ||
