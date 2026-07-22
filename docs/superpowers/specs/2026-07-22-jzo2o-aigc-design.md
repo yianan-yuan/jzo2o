@@ -139,7 +139,7 @@
 - `status`：阶段值为 `UNDERSTANDING`、`SEARCHING_SERVICES` 或 `GENERATING`。
 - `delta`：助手文本增量。
 - `recommendations`：权威服务推荐卡片数组。
-- `done`：成功终止事件，包含最终阶段 `CLARIFYING`、`RECOMMENDING` 或 `NO_MATCH`。
+- `done`：成功终止事件，包含最终阶段 `CLARIFYING`、`RECOMMENDING` 或 `NO_MATCH`，以及可选的 `suggestedQuestions` 快捷追问数组。
 - `error`：失败终止事件，包含稳定错误码、用户提示和 `retryable`。
 
 每次流必须以 `done` 或 `error` 其中之一结束，不能同时发送两种终止事件。连接异常断开属于传输故障，客户端显示重试入口。
@@ -186,6 +186,7 @@
 
 - 每轮最多追问一个问题。
 - 每轮最多推荐 3 个服务。
+- 每轮最多返回 3 条快捷追问，内容只能用于继续咨询或调整需求。
 - “家里需要打扫”等已足以映射服务类型的表达不做无意义追问。
 - 没有有效候选时返回 `NO_MATCH`，不生成虚假服务。
 - 模型无法创建订单、指定价格、调用未授权工具或扩大查询范围。
