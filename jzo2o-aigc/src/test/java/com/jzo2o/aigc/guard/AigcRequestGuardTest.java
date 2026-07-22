@@ -78,6 +78,24 @@ class AigcRequestGuardTest {
         verify(activeGenerations, never()).remove("s1");
     }
 
+    @Test
+    void shouldRetryLeaseReleaseAfterRemovalFailure() {
+        GenerationLease lease = new GenerationLease(activeGenerations, "s1", "request-token");
+        when(activeGenerations.remove("s1", "request-token"))
+                .thenThrow(new RuntimeException("Redis unavailable"))
+                .thenReturn(true);
+
+        assertThatThrownBy(lease::close)
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Redis unavailable");
+
+        lease.close();
+        lease.close();
+
+        verify(activeGenerations, times(2)).remove("s1", "request-token");
+        verify(activeGenerations, never()).remove("s1");
+    }
+
     private AigcRequestGuard guard() {
         return new AigcRequestGuard(redissonClient, new AigcProperties());
     }

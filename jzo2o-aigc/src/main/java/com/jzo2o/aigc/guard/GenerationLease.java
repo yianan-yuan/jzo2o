@@ -2,14 +2,12 @@ package com.jzo2o.aigc.guard;
 
 import org.redisson.api.RMapCache;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class GenerationLease implements AutoCloseable {
 
     private final RMapCache<String, String> activeGenerations;
     private final String sessionId;
     private final String token;
-    private final AtomicBoolean closed = new AtomicBoolean();
+    private boolean closed;
 
     public GenerationLease(RMapCache<String, String> activeGenerations, String sessionId, String token) {
         this.activeGenerations = activeGenerations;
@@ -18,9 +16,11 @@ public class GenerationLease implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        if (closed.compareAndSet(false, true)) {
-            activeGenerations.remove(sessionId, token);
+    public synchronized void close() {
+        if (closed) {
+            return;
         }
+        activeGenerations.remove(sessionId, token);
+        closed = true;
     }
 }
