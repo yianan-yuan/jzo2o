@@ -127,10 +127,13 @@ class OpenAiCompatibleModelProviderTest {
     }
 
     @Test
-    void streamIgnoresEmptyContentDelta() {
+    void streamIgnoresMetadataOnlyNullAndEmptyContentChunks() {
         enqueue(200,
-                "data: {\"choices\":[{\"delta\":{\"content\":\"\"}}]}\n"
+                "data: {\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n"
+                        + "data: {\"choices\":[{\"delta\":{\"content\":null},\"finish_reason\":null}]}\n"
+                        + "data: {\"choices\":[{\"delta\":{\"content\":\"\"}}]}\n"
                         + "data: {\"choices\":[{\"delta\":{\"content\":\"usable\"}}]}\n"
+                        + "data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\"}]}\n"
                         + "data: [DONE]\n");
         List<String> deltas = new ArrayList<>();
 
@@ -179,6 +182,14 @@ class OpenAiCompatibleModelProviderTest {
     @Test
     void streamMapsMalformedDataPayloadToModelUnavailable() {
         enqueue(200, "data: {\"choices\":[]}\n");
+
+        assertModelUnavailable(() -> provider.stream(
+                Collections.emptyList(), new CancellationToken(), ignored -> { }));
+    }
+
+    @Test
+    void streamMapsNonTextContentToModelUnavailable() {
+        enqueue(200, "data: {\"choices\":[{\"delta\":{\"content\":42}}]}\n");
 
         assertModelUnavailable(() -> provider.stream(
                 Collections.emptyList(), new CancellationToken(), ignored -> { }));

@@ -32,8 +32,11 @@ public final class OpenAiSseDecoder {
             throw new IOException("OpenAI response is missing delta");
         }
         JsonNode content = delta.get("content");
-        if (content == null || !content.isTextual()) {
-            throw new IOException("OpenAI response is missing delta content");
+        if (content == null || content.isNull()) {
+            return null;
+        }
+        if (!content.isTextual()) {
+            throw new IOException("OpenAI response delta content is not text");
         }
         return content.asText().isEmpty() ? null : content.asText();
     }
