@@ -29,9 +29,14 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class DemandUnderstandingService {
 
-    private static final Set<String> ALLOWED_FIELDS = new LinkedHashSet<>(Arrays.asList(
+    private static final Set<String> REQUIRED_FIELDS = new LinkedHashSet<>(Arrays.asList(
             "summary", "searchKeyword", "constraints", "needsClarification",
-            "clarifyingQuestion", "referencedRecommendationIndex"));
+            "clarifyingQuestion"));
+    private static final Set<String> ALLOWED_FIELDS = new LinkedHashSet<>(REQUIRED_FIELDS);
+
+    static {
+        ALLOWED_FIELDS.add("referencedRecommendationIndex");
+    }
 
     private final ModelProvider provider;
     private final ObjectMapper objectMapper;
@@ -82,10 +87,13 @@ public class DemandUnderstandingService {
         require(constraints.isObject());
         require(needsClarification.isBoolean());
         require(clarifyingQuestion.isNull() || clarifyingQuestion.isTextual());
-        require(recommendationIndex.isNull()
+        require(recommendationIndex == null || recommendationIndex.isNull()
                 || recommendationIndex.isIntegralNumber() && recommendationIndex.canConvertToInt());
 
-        Map<String, String> facts = new LinkedHashMap<>();
+        DemandProfile previous = session.getDemandProfile();
+        Map<String, String> facts = previous == null || previous.getClarifiedFacts() == null
+                ? new LinkedHashMap<>()
+                : new LinkedHashMap<>(previous.getClarifiedFacts());
         Iterator<Map.Entry<String, JsonNode>> constraintFields = constraints.fields();
         while (constraintFields.hasNext()) {
             Map.Entry<String, JsonNode> constraint = constraintFields.next();
@@ -99,7 +107,9 @@ public class DemandUnderstandingService {
             require(hasText(question));
         }
 
-        Integer index = recommendationIndex.isNull() ? null : recommendationIndex.intValue();
+        Integer index = recommendationIndex == null || recommendationIndex.isNull()
+                ? null
+                : recommendationIndex.intValue();
         Long serveId = null;
         if (index != null) {
             List<Long> recommendations = session.getLastRecommendedServeIds();
@@ -111,7 +121,6 @@ public class DemandUnderstandingService {
             require(hasText(searchKeyword.textValue()) || index != null);
         }
 
-        DemandProfile previous = session.getDemandProfile();
         DemandProfile profile = new DemandProfile();
         profile.setSummary(summary.textValue());
         profile.setSearchKeyword(searchKeyword.textValue());
@@ -129,7 +138,7 @@ public class DemandUnderstandingService {
         require(root != null && root.isObject());
         Set<String> actualFields = new LinkedHashSet<>();
         root.fieldNames().forEachRemaining(actualFields::add);
-        require(actualFields.equals(ALLOWED_FIELDS));
+        require(actualFields.containsAll(REQUIRED_FIELDS) && ALLOWED_FIELDS.containsAll(actualFields));
     }
 
     private void ensureActive(CancellationToken cancellationToken) {

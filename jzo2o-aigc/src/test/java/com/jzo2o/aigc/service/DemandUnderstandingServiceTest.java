@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,6 +52,22 @@ class DemandUnderstandingServiceTest {
 
         assertThat(result.getProfile().getSearchKeyword()).isEqualTo("保洁");
         verify(provider).complete(anyList(), eq(0D), any());
+    }
+
+    @Test
+    void shouldAcceptDemandJsonWithoutOptionalRecommendationIndex() {
+        when(provider.complete(anyList(), anyDouble(), any())).thenReturn(
+                "{\"summary\":\"日常保洁\",\"searchKeyword\":\"保洁\","
+                        + "\"constraints\":{},\"needsClarification\":false,"
+                        + "\"clarifyingQuestion\":null}");
+
+        DemandDecision result = service.understand(session(), "家里需要打扫", new CancellationToken());
+
+        assertThat(result.getProfile().getSearchKeyword()).isEqualTo("保洁");
+        assertThat(result.getReferencedRecommendationIndex()).isNull();
+        assertThat(result.getReferencedServeId()).isNull();
+        verify(provider).complete(anyList(), eq(0.2D), any());
+        verify(provider, never()).complete(anyList(), eq(0D), any());
     }
 
     @Test
@@ -146,6 +164,29 @@ class DemandUnderstandingServiceTest {
         assertThat(result.getProfile().getConfirmedConstraints())
                 .isNotSameAs(session.getDemandProfile().getConfirmedConstraints());
         assertThat(result.getProfile().getClarifiedFacts()).containsEntry("duration", "2小时");
+    }
+
+    @Test
+    void shouldMergeClarifiedFactsWithoutMutatingPreviousProfile() {
+        AigcSession session = session();
+        Map<String, String> previousFacts = new LinkedHashMap<>();
+        previousFacts.put("room", "厨房");
+        previousFacts.put("duration", "1小时");
+        session.getDemandProfile().setClarifiedFacts(previousFacts);
+        when(provider.complete(anyList(), anyDouble(), any())).thenReturn(
+                demandJson("明天两小时保洁", "保洁",
+                        "{\"duration\":\"2小时\",\"date\":\"明天\"}", false, null, "null"));
+
+        DemandDecision result = service.understand(session, "改成明天两小时", new CancellationToken());
+
+        assertThat(result.getProfile().getClarifiedFacts()).containsExactly(
+                org.assertj.core.data.MapEntry.entry("room", "厨房"),
+                org.assertj.core.data.MapEntry.entry("duration", "2小时"),
+                org.assertj.core.data.MapEntry.entry("date", "明天"));
+        assertThat(result.getProfile().getClarifiedFacts()).isNotSameAs(previousFacts);
+        assertThat(previousFacts).containsExactly(
+                org.assertj.core.data.MapEntry.entry("room", "厨房"),
+                org.assertj.core.data.MapEntry.entry("duration", "1小时"));
     }
 
     @Test
