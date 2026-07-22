@@ -45,7 +45,7 @@ public class InnerServeController implements ServeApi {
     @GetMapping("/search")
     public List<ServeAggregationResDTO> searchActiveServes(@RequestParam("cityCode") String cityCode,
                                                             @RequestParam("keyword") String keyword,
-                                                            @RequestParam("limit") Integer limit) {
+                                                            @RequestParam(value = "limit", required = false) Integer limit) {
         int safeLimit = Math.max(1, Math.min(limit == null ? 20 : limit, 20));
         return serveAggregationService.findServeList(cityCode, null, keyword).stream()
                 .map(item -> serveService.findServeDetailById(item.getId()))
