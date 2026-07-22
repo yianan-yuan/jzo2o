@@ -85,6 +85,38 @@ class AigcSessionServiceTest {
     }
 
     @Test
+    void shouldCopyFixedSizeChatTurnsBeforeAppending() {
+        AigcSession session = AigcSession.create("s1", 7L);
+        session.setRecentChatTurns(Arrays.asList(new ChatTurn("user", "first")));
+
+        session.addChatTurn(new ChatTurn("assistant", "second"), 10);
+
+        assertThat(session.getRecentChatTurns()).extracting(ChatTurn::getContent)
+                .containsExactly("first", "second");
+    }
+
+    @Test
+    void shouldEnforceTenTurnHardLimitWhenCallerSuppliesLargerMaximum() {
+        AigcSession session = AigcSession.create("s1", 7L);
+        for (int index = 0; index < 11; index++) {
+            session.addChatTurn(new ChatTurn("user", "message-" + index), 99);
+        }
+
+        assertThat(session.getRecentChatTurns()).hasSize(10);
+        assertThat(session.getRecentChatTurns().get(0).getContent()).isEqualTo("message-1");
+    }
+
+    @Test
+    void shouldPreventCallersFromMutatingChatTurnsThroughGetter() {
+        AigcSession session = AigcSession.create("s1", 7L);
+        session.addChatTurn(new ChatTurn("user", "first"), 10);
+
+        assertThatThrownBy(() -> session.getRecentChatTurns().add(new ChatTurn("user", "second")))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThat(session.getRecentChatTurns()).extracting(ChatTurn::getContent).containsExactly("first");
+    }
+
+    @Test
     void shouldReturnStableUnwrappedErrorResponse() {
         AigcException exception = new AigcException(AigcErrorCode.RATE_LIMITED, "Try later");
 
