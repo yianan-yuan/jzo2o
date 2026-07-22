@@ -16,12 +16,18 @@ public final class OllamaStreamDecoder {
 
     public String decode(String line) throws IOException {
         JsonNode root = objectMapper.readTree(line);
+        if (root == null || !root.isObject()) {
+            throw new IOException("Ollama response root is not an object");
+        }
         JsonNode message = root.get("message");
         if (message == null || !message.isObject()) {
             throw new IOException("Ollama response is missing message");
         }
         JsonNode content = message.get("content");
-        if (content == null || !content.isTextual() || content.asText().isEmpty()) {
+        if (content == null || !content.isTextual()) {
+            throw new IOException("Ollama response is missing message content");
+        }
+        if (content.asText().isEmpty()) {
             return null;
         }
         return content.asText();

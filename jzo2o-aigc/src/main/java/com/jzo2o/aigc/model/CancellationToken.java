@@ -13,9 +13,21 @@ public final class CancellationToken {
         if (!cancelled.compareAndSet(false, true)) {
             return;
         }
+        RuntimeException firstFailure = null;
         Runnable callback;
         while ((callback = callbacks.poll()) != null) {
-            callback.run();
+            try {
+                callback.run();
+            } catch (RuntimeException error) {
+                if (firstFailure == null) {
+                    firstFailure = error;
+                } else if (error != firstFailure) {
+                    firstFailure.addSuppressed(error);
+                }
+            }
+        }
+        if (firstFailure != null) {
+            throw firstFailure;
         }
     }
 

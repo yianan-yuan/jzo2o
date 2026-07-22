@@ -56,6 +56,9 @@ public class OllamaModelProvider implements ModelProvider {
                     return "";
                 }
                 JsonNode root = objectMapper.readTree(body);
+                if (root == null || !root.isObject()) {
+                    throw unavailable("Ollama response root is not an object");
+                }
                 JsonNode message = root.get("message");
                 if (message == null || !message.isObject()) {
                     throw unavailable("Ollama response is missing message");
@@ -104,7 +107,7 @@ public class OllamaModelProvider implements ModelProvider {
                     if (line == null || cancellationToken.isCancelled()) {
                         break;
                     }
-                    if (line.isEmpty()) {
+                    if (line.trim().isEmpty()) {
                         continue;
                     }
                     String delta = streamDecoder.decode(line);

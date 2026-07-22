@@ -40,6 +40,7 @@ import javax.net.ssl.SSLParameters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 class OllamaModelProviderTest {
 
@@ -139,6 +140,49 @@ class OllamaModelProviderTest {
     }
 
     @Test
+    void completeMapsBlankJsonToModelUnavailable() {
+        enqueue(200, "   ");
+
+        assertModelUnavailable(() -> provider.complete(Collections.emptyList(), 0.2D, new CancellationToken()));
+    }
+
+    @Test
+    void completeMapsNullParsedRootToModelUnavailable() {
+        enqueue(200, "{}");
+        provider = new OllamaModelProvider(httpClient, new NullRootObjectMapper(), properties);
+
+        assertModelUnavailable(() -> provider.complete(Collections.emptyList(), 0.2D, new CancellationToken()));
+    }
+
+    @Test
+    void streamMapsJsonNullToModelUnavailable() {
+        enqueue(200, "null\n");
+
+        assertModelUnavailable(() -> provider.stream(
+                Collections.emptyList(), new CancellationToken(), ignored -> { }));
+    }
+
+    @Test
+    void streamMapsMissingContentToModelUnavailable() {
+        enqueue(200, "{\"message\":{},\"done\":true}\n");
+
+        assertModelUnavailable(() -> provider.stream(
+                Collections.emptyList(), new CancellationToken(), ignored -> { }));
+    }
+
+    @Test
+    void streamIgnoresWhitespaceOnlyLines() {
+        enqueue(200,
+                "  \t  \n"
+                        + "{\"message\":{\"content\":\"usable\"},\"done\":true}\n");
+        List<String> deltas = new ArrayList<>();
+
+        provider.stream(Collections.emptyList(), new CancellationToken(), deltas::add);
+
+        assertThat(deltas).containsExactly("usable");
+    }
+
+    @Test
     void cancellationCallbacksRunOnceAndLateRegistrationRunsImmediately() {
         CancellationToken token = new CancellationToken();
         AtomicInteger first = new AtomicInteger();
@@ -152,6 +196,24 @@ class OllamaModelProviderTest {
         assertThat(token.isCancelled()).isTrue();
         assertThat(first).hasValue(1);
         assertThat(late).hasValue(1);
+    }
+
+    @Test
+    void cancellationDrainsCallbacksBeforePropagatingFirstFailure() {
+        CancellationToken token = new CancellationToken();
+        RuntimeException firstFailure = new RuntimeException("first callback failed");
+        AtomicInteger cleanupCalls = new AtomicInteger();
+        token.onCancel(() -> {
+            throw firstFailure;
+        });
+        token.onCancel(cleanupCalls::incrementAndGet);
+
+        RuntimeException thrown = catchThrowableOfType(token::cancel, RuntimeException.class);
+
+        assertThat(thrown).isSameAs(firstFailure);
+        assertThat(cleanupCalls).hasValue(1);
+        token.cancel();
+        assertThat(cleanupCalls).hasValue(1);
     }
 
     private void assertModelUnavailable(Runnable call) {
@@ -189,6 +251,13 @@ class OllamaModelProviderTest {
         private StubResponse(int status, String body) {
             this.status = status;
             this.body = body;
+        }
+    }
+
+    private static final class NullRootObjectMapper extends ObjectMapper {
+        @Override
+        public JsonNode readTree(java.io.InputStream input) {
+            return null;
         }
     }
 
