@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum AigcErrorCode {
+    INVALID_REQUEST("AIGC_INVALID_REQUEST", 400, false),
     UNAUTHORIZED("AIGC_UNAUTHORIZED", 401, false),
     SESSION_NOT_FOUND("AIGC_SESSION_NOT_FOUND", 404, false),
     SESSION_EXPIRED("AIGC_SESSION_EXPIRED", 410, false),

@@ -51,6 +51,9 @@ public class AssistantOrchestrator {
                     String message,
                     SseEventSink sink,
                     CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         AigcSession session = sessionService.loadOwned(userId, sessionId);
         run(session, cityCode, message, sink, cancellationToken);
     }
@@ -60,19 +63,31 @@ public class AssistantOrchestrator {
                     String message,
                     SseEventSink sink,
                     CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         session.updateCity(cityCode);
         sink.status("UNDERSTANDING");
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         try {
             executeControlled(session, cityCode, message, sink, cancellationToken);
         } catch (AigcException error) {
-            if (error.getErrorCode() == AigcErrorCode.MODEL_UNAVAILABLE) {
-                fallback(session, cityCode, message, sink);
+            if (cancelled(cancellationToken)) {
                 return;
             }
-            emitError(sink, error.getErrorCode());
+            if (error.getErrorCode() == AigcErrorCode.MODEL_UNAVAILABLE) {
+                fallback(session, cityCode, message, sink, cancellationToken);
+                return;
+            }
+            emitError(sink, error.getErrorCode(), cancellationToken);
         } catch (RuntimeException error) {
+            if (cancelled(cancellationToken)) {
+                return;
+            }
             log.error("Unexpected assistant orchestration failure", error);
-            emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE);
+            emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE, cancellationToken);
         }
     }
 
@@ -81,10 +96,16 @@ public class AssistantOrchestrator {
                                    String message,
                                    SseEventSink sink,
                                    CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         DemandDecision decision = understanding.understand(session, message, cancellationToken);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         session.setDemandProfile(decision.getProfile());
         if (decision.isNeedsClarification()) {
-            finishClarification(session, message, decision.getClarifyingQuestion(), sink);
+            finishClarification(session, message, decision.getClarifyingQuestion(), sink, cancellationToken);
             return;
         }
         if (decision.getReferencedRecommendationIndex() != null) {
@@ -101,18 +122,30 @@ public class AssistantOrchestrator {
                                     DemandDecision decision,
                                     SseEventSink sink,
                                     CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.status("SEARCHING_SERVICES");
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         List<ServeAggregationResDTO> candidates = activeCityCandidates(
                 searchCatalog(cityCode, decision.getProfile().getSearchKeyword(), 20), cityCode);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         if (candidates.isEmpty()) {
-            finishNoMatch(session, message, NO_MATCH_TEXT, sink);
+            finishNoMatch(session, message, NO_MATCH_TEXT, sink, cancellationToken);
             return;
         }
         List<SelectedService> selected = selection.select(
                 decision.getProfile(), candidates, cancellationToken);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         List<RecommendationCardDTO> cards = cards(selected, candidates);
         if (cards.isEmpty()) {
-            finishNoMatch(session, message, NO_MATCH_TEXT, sink);
+            finishNoMatch(session, message, NO_MATCH_TEXT, sink, cancellationToken);
             return;
         }
         streamRecommendation(session, message, cards, sink, cancellationToken);
@@ -124,25 +157,31 @@ public class AssistantOrchestrator {
                                    int oneBasedIndex,
                                    SseEventSink sink,
                                    CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         List<Long> previousIds = session.getLastRecommendedServeIds();
         if (oneBasedIndex < 1 || oneBasedIndex > previousIds.size()) {
-            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink);
+            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken);
             return;
         }
         Long serveId = previousIds.get(oneBasedIndex - 1);
         ServeAggregationResDTO candidate = serveId == null ? null : findCatalog(serveId);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         if (!isActiveInCity(candidate, cityCode) || ServeUnitLabels.labelOf(candidate.getUnit()) == null) {
             if (candidate != null && ServeUnitLabels.labelOf(candidate.getUnit()) == null) {
                 logInvalidUnit(candidate);
             }
-            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink);
+            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken);
             return;
         }
         List<RecommendationCardDTO> cards = cards(
                 Collections.singletonList(new SelectedService(serveId, "根据你刚才关注的服务继续说明")),
                 Collections.singletonList(candidate));
         if (cards.isEmpty()) {
-            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink);
+            finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken);
             return;
         }
         streamRecommendation(session, message, cards, sink, cancellationToken);
@@ -153,27 +192,60 @@ public class AssistantOrchestrator {
                                       List<RecommendationCardDTO> cards,
                                       SseEventSink sink,
                                       CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.status("GENERATING");
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         StringBuilder reply = new StringBuilder();
         Consumer<String> delta = text -> {
-            if (text != null && !text.isEmpty()) {
-                reply.append(text);
+            if (!cancelled(cancellationToken) && text != null && !text.trim().isEmpty()) {
                 sink.delta(text);
+                if (!cancelled(cancellationToken)) {
+                    reply.append(text);
+                }
             }
         };
         replyGenerator.streamReply(session, cards, cancellationToken, delta);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.recommendations(cards);
-        finishRecommendationState(session, message, reply.toString(), cards);
+        if (cancelled(cancellationToken)
+                || !finishRecommendationState(session, message, reply.toString(), cards, cancellationToken)) {
+            return;
+        }
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.done(ConversationStage.RECOMMENDING, suggestedQuestions(cards.size()));
     }
 
-    private void fallback(AigcSession session, String cityCode, String message, SseEventSink sink) {
+    private void fallback(AigcSession session,
+                          String cityCode,
+                          String message,
+                          SseEventSink sink,
+                          CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         try {
             sink.status("SEARCHING_SERVICES");
+            if (cancelled(cancellationToken)) {
+                return;
+            }
             List<ServeAggregationResDTO> candidates = activeCityCandidates(
                     searchCatalog(cityCode, normalizeForFallback(message), HARD_RECOMMENDATION_LIMIT), cityCode);
+            if (cancelled(cancellationToken)) {
+                return;
+            }
             List<RecommendationCardDTO> cards = new ArrayList<>();
             for (ServeAggregationResDTO candidate : candidates) {
+                if (cancelled(cancellationToken)) {
+                    return;
+                }
                 RecommendationCardDTO card = card(new SelectedService(candidate.getId(), FALLBACK_REASON), candidate);
                 if (card != null) {
                     cards.add(card);
@@ -183,50 +255,114 @@ public class AssistantOrchestrator {
                 }
             }
             if (cards.isEmpty()) {
-                emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE);
+                emitError(sink, AigcErrorCode.MODEL_UNAVAILABLE, cancellationToken);
+                return;
+            }
+            if (cancelled(cancellationToken)) {
                 return;
             }
             sink.status("GENERATING");
+            if (cancelled(cancellationToken)) {
+                return;
+            }
             sink.delta(FALLBACK_TEXT);
+            if (cancelled(cancellationToken)) {
+                return;
+            }
             sink.recommendations(cards);
-            finishRecommendationState(session, message, FALLBACK_TEXT, cards);
+            if (cancelled(cancellationToken)
+                    || !finishRecommendationState(session, message, FALLBACK_TEXT, cards, cancellationToken)) {
+                return;
+            }
+            if (cancelled(cancellationToken)) {
+                return;
+            }
             sink.done(ConversationStage.RECOMMENDING, suggestedQuestions(cards.size()));
         } catch (AigcException error) {
-            emitError(sink, error.getErrorCode());
+            emitError(sink, error.getErrorCode(), cancellationToken);
         } catch (RuntimeException error) {
+            if (cancelled(cancellationToken)) {
+                return;
+            }
             log.warn("Fallback service catalog failed", error);
-            emitError(sink, AigcErrorCode.SERVICE_CATALOG_UNAVAILABLE);
+            emitError(sink, AigcErrorCode.SERVICE_CATALOG_UNAVAILABLE, cancellationToken);
         }
     }
 
-    private void finishClarification(AigcSession session, String message, String question, SseEventSink sink) {
+    private void finishClarification(AigcSession session,
+                                     String message,
+                                     String question,
+                                     SseEventSink sink,
+                                     CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.status("GENERATING");
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.delta(question);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         session.setLastRecommendedServeIds(Collections.emptyList());
         session.setStage(ConversationStage.CLARIFYING);
         appendTurns(session, message, question);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sessionService.save(session);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.done(ConversationStage.CLARIFYING, Collections.emptyList());
     }
 
-    private void finishNoMatch(AigcSession session, String message, String text, SseEventSink sink) {
+    private void finishNoMatch(AigcSession session,
+                               String message,
+                               String text,
+                               SseEventSink sink,
+                               CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.status("GENERATING");
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.delta(text);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         session.setLastRecommendedServeIds(Collections.emptyList());
         session.setStage(ConversationStage.NO_MATCH);
         appendTurns(session, message, text);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sessionService.save(session);
+        if (cancelled(cancellationToken)) {
+            return;
+        }
         sink.done(ConversationStage.NO_MATCH, Collections.singletonList("可以换个需求描述吗？"));
     }
 
-    private void finishRecommendationState(AigcSession session,
-                                           String message,
-                                           String assistantText,
-                                           List<RecommendationCardDTO> cards) {
+    private boolean finishRecommendationState(AigcSession session,
+                                              String message,
+                                              String assistantText,
+                                              List<RecommendationCardDTO> cards,
+                                              CancellationToken cancellationToken) {
+        if (cancelled(cancellationToken)) {
+            return false;
+        }
         session.setLastRecommendedServeIds(cardIds(cards));
         session.setStage(ConversationStage.RECOMMENDING);
         appendTurns(session, message, assistantText);
+        if (cancelled(cancellationToken)) {
+            return false;
+        }
         sessionService.save(session);
+        return !cancelled(cancellationToken);
     }
 
     private List<ServeAggregationResDTO> searchCatalog(String cityCode, String keyword, int limit) {
@@ -346,7 +482,15 @@ public class AssistantOrchestrator {
         session.addChatTurn(new ChatTurn("assistant", assistantText), properties.getMaxRounds());
     }
 
-    private void emitError(SseEventSink sink, AigcErrorCode errorCode) {
-        sink.error(errorCode, errorCode.getCode());
+    private boolean cancelled(CancellationToken cancellationToken) {
+        return cancellationToken != null && cancellationToken.isCancelled();
+    }
+
+    private void emitError(SseEventSink sink,
+                           AigcErrorCode errorCode,
+                           CancellationToken cancellationToken) {
+        if (!cancelled(cancellationToken)) {
+            sink.error(errorCode, errorCode.getCode());
+        }
     }
 }

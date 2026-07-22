@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 @Service
@@ -35,13 +36,23 @@ public class ReplyGenerationService {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("profile", session.getDemandProfile());
         payload.put("cards", cards);
+        AtomicBoolean emittedEffectiveDelta = new AtomicBoolean();
+        Consumer<String> effectiveDelta = text -> {
+            if (text != null && !text.trim().isEmpty()) {
+                onDelta.accept(text);
+                emittedEffectiveDelta.set(true);
+            }
+        };
         try {
             provider.stream(Arrays.asList(
                     new ModelMessage("system", SYSTEM_PROMPT),
                     new ModelMessage("user", objectMapper.writeValueAsString(payload))),
-                    cancellationToken, onDelta);
+                    cancellationToken, effectiveDelta);
         } catch (JsonProcessingException error) {
             throw new AigcException(AigcErrorCode.MODEL_OUTPUT_INVALID);
+        }
+        if (!emittedEffectiveDelta.get() && !cancellationToken.isCancelled()) {
+            throw new AigcException(AigcErrorCode.MODEL_UNAVAILABLE);
         }
     }
 }

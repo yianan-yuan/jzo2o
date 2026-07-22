@@ -16,14 +16,12 @@ import com.jzo2o.common.handler.UserInfoHandler;
 import com.jzo2o.common.model.CurrentUser;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.concurrent.Executor;
@@ -89,7 +87,10 @@ public class AiAssistantController {
         CancellationToken cancellationToken = new CancellationToken();
         StreamLifecycle lifecycle = new StreamLifecycle(lease);
         SseEmitterEventSink sink = new SseEmitterEventSink(
-                emitter, lifecycle::onFirstDelta, lifecycle::cleanup);
+                emitter, lifecycle::onFirstDelta, () -> {
+                    cancelQuietly(cancellationToken);
+                    lifecycle.cleanup();
+                });
 
         emitter.onTimeout(() -> requestTimeout(cancellationToken, sink, lifecycle));
         emitter.onError(error -> {
@@ -160,7 +161,7 @@ public class AiAssistantController {
         boolean invalidCity = cityCode == null || cityCode.trim().isEmpty()
                 || !CITY_CODE.matcher(cityCode).matches();
         if (invalidMessage || invalidCity) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid assistant message request");
+            throw new AigcException(AigcErrorCode.INVALID_REQUEST);
         }
     }
 

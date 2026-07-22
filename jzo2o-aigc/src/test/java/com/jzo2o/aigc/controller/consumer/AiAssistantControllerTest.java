@@ -7,23 +7,30 @@ import com.jzo2o.aigc.domain.AigcSession;
 import com.jzo2o.aigc.domain.ConversationStage;
 import com.jzo2o.aigc.exception.AigcErrorCode;
 import com.jzo2o.aigc.exception.AigcException;
+import com.jzo2o.aigc.exception.AigcExceptionAdvice;
 import com.jzo2o.aigc.guard.AigcRequestGuard;
 import com.jzo2o.aigc.guard.GenerationLease;
 import com.jzo2o.aigc.model.CancellationToken;
 import com.jzo2o.aigc.properties.AigcProperties;
 import com.jzo2o.aigc.service.AigcSessionService;
 import com.jzo2o.aigc.service.AssistantOrchestrator;
+import com.jzo2o.aigc.service.CandidateSelectionService;
+import com.jzo2o.aigc.service.DemandUnderstandingService;
+import com.jzo2o.aigc.service.ReplyGenerationService;
+import com.jzo2o.aigc.service.ServiceCatalogService;
 import com.jzo2o.aigc.stream.SseEmitterEventSink;
 import com.jzo2o.aigc.stream.SseEventSink;
 import com.jzo2o.common.handler.UserInfoHandler;
 import com.jzo2o.common.model.CurrentUserInfo;
+import com.jzo2o.mvc.advice.CommonExceptionAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -68,6 +75,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AiAssistantControllerTest {
 
@@ -153,9 +164,28 @@ class AiAssistantControllerTest {
         for (AssistantMessageReqDTO invalid : java.util.Arrays.asList(blankMessage, longMessage, invalidCity)) {
             assertThatThrownBy(() -> controller(Runnable::run, new ManualScheduler())
                     .sendMessage("s1", invalid))
-                    .isInstanceOfSatisfying(ResponseStatusException.class,
-                            error -> assertThat(error.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST));
+                    .isInstanceOfSatisfying(AigcException.class,
+                            error -> assertThat(error.getErrorCode()).isEqualTo(AigcErrorCode.INVALID_REQUEST));
         }
+        verifyNoInteractions(sessionService, guard, orchestrator);
+    }
+
+    @Test
+    void shouldReturnRealBadRequestContractBeforeSessionOrGuardAccess() throws Exception {
+        MockMvc mockMvc = MockMvcBuilders
+                .standaloneSetup(controller(Runnable::run, new ManualScheduler()))
+                .setControllerAdvice(new AigcExceptionAdvice(), new CommonExceptionAdvice())
+                .build();
+
+        mockMvc.perform(post("/consumer/assistant/sessions/s1/messages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"message\":\"   \",\"cityCode\":\"010\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("Processed-Mark", "1"))
+                .andExpect(jsonPath("$.code").value("AIGC_INVALID_REQUEST"))
+                .andExpect(jsonPath("$.message").value("AIGC_INVALID_REQUEST"))
+                .andExpect(jsonPath("$.retryable").value(false));
+
         verifyNoInteractions(sessionService, guard, orchestrator);
     }
 
@@ -187,6 +217,22 @@ class AiAssistantControllerTest {
         assertThat(emitter.getTimeout()).isEqualTo(95_000L);
         assertThat(scheduler.delays()).containsExactly(30L, 90L);
         verify(orchestrator).run(same(session), eq("010"), eq("保洁"), any(), any());
+        verify(lease).close();
+    }
+
+    @Test
+    void shouldCancelTokenDirectlyWhenSinkTerminatesWithoutEmitterCallback() {
+        ManualScheduler scheduler = new ManualScheduler();
+        doAnswer(invocation -> {
+            CancellationToken token = invocation.getArgument(4);
+            invocation.<SseEventSink>getArgument(3)
+                    .done(ConversationStage.CLARIFYING, Collections.emptyList());
+            assertThat(token.isCancelled()).isTrue();
+            return null;
+        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any());
+
+        controller(Runnable::run, scheduler).sendMessage("s1", request());
+
         verify(lease).close();
     }
 
@@ -310,6 +356,46 @@ class AiAssistantControllerTest {
     }
 
     @Test
+    void shouldNotStartOrSaveAfterFirstTokenTimeout() {
+        ManualScheduler scheduler = new ManualScheduler();
+        QueuedExecutor executor = new QueuedExecutor();
+        DemandUnderstandingService understanding = mock(DemandUnderstandingService.class);
+        ServiceCatalogService catalog = mock(ServiceCatalogService.class);
+        CandidateSelectionService selection = mock(CandidateSelectionService.class);
+        ReplyGenerationService replyGenerator = mock(ReplyGenerationService.class);
+        AssistantOrchestrator realOrchestrator = new AssistantOrchestrator(
+                sessionService, understanding, catalog, selection, replyGenerator, properties);
+
+        controller(executor, scheduler, realOrchestrator).sendMessage("s1", request());
+        scheduler.runDelay(30L);
+        executor.runQueued();
+
+        verifyNoInteractions(understanding, catalog, selection, replyGenerator);
+        verify(sessionService, never()).save(any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldNotStartOrSaveAfterClientDisconnect() {
+        ManualScheduler scheduler = new ManualScheduler();
+        QueuedExecutor executor = new QueuedExecutor();
+        DemandUnderstandingService understanding = mock(DemandUnderstandingService.class);
+        ServiceCatalogService catalog = mock(ServiceCatalogService.class);
+        CandidateSelectionService selection = mock(CandidateSelectionService.class);
+        ReplyGenerationService replyGenerator = mock(ReplyGenerationService.class);
+        AssistantOrchestrator realOrchestrator = new AssistantOrchestrator(
+                sessionService, understanding, catalog, selection, replyGenerator, properties);
+        SseEmitter emitter = controller(executor, scheduler, realOrchestrator).sendMessage("s1", request());
+
+        ((Consumer<Throwable>) callback(emitter, "errorCallback"))
+                .accept(new IOException("disconnected"));
+        executor.runQueued();
+
+        verifyNoInteractions(understanding, catalog, selection, replyGenerator);
+        verify(sessionService, never()).save(any());
+    }
+
+    @Test
     void shouldEmitExactEventsIgnoreEmptyDeltaAndAllowOnlyOneTerminalEvent() {
         RecordingEmitter emitter = new RecordingEmitter();
         AtomicInteger firstDelta = new AtomicInteger();
@@ -412,7 +498,13 @@ class AiAssistantControllerTest {
     }
 
     private AiAssistantController controller(Executor executor, ScheduledExecutorService scheduler) {
-        return new AiAssistantController(userInfoHandler, sessionService, guard, orchestrator,
+        return controller(executor, scheduler, orchestrator);
+    }
+
+    private AiAssistantController controller(Executor executor,
+                                             ScheduledExecutorService scheduler,
+                                             AssistantOrchestrator targetOrchestrator) {
+        return new AiAssistantController(userInfoHandler, sessionService, guard, targetOrchestrator,
                 executor, scheduler, properties);
     }
 
