@@ -215,6 +215,14 @@ class AssistantOrchestratorTest {
         verifyNoInteractions(catalog);
         assertThat(sink.suggestedQuestions).isEmpty();
         assertThat(session.getStage()).isEqualTo(ConversationStage.CLARIFYING);
+        ArgumentCaptor<AigcObservation> observation = ArgumentCaptor.forClass(AigcObservation.class);
+        verify(observationLogger, times(1)).log(observation.capture());
+        assertThat(observation.getValue().toLogFields())
+                .containsEntry("terminalStage", "CLARIFYING")
+                .containsEntry("candidateCount", 0)
+                .containsEntry("recommendationCount", 0)
+                .containsEntry("errorCode", null)
+                .containsEntry("degraded", false);
     }
 
     @Test
@@ -232,6 +240,14 @@ class AssistantOrchestratorTest {
         assertThat(session.getStage()).isEqualTo(ConversationStage.NO_MATCH);
         assertThat(session.getLastRecommendedServeIds()).isEmpty();
         verifyNoInteractions(selection, replyGenerator);
+        ArgumentCaptor<AigcObservation> observation = ArgumentCaptor.forClass(AigcObservation.class);
+        verify(observationLogger, times(1)).log(observation.capture());
+        assertThat(observation.getValue().toLogFields())
+                .containsEntry("terminalStage", "NO_MATCH")
+                .containsEntry("candidateCount", 0)
+                .containsEntry("recommendationCount", 0)
+                .containsEntry("errorCode", null)
+                .containsEntry("degraded", false);
     }
 
     @Test
@@ -268,6 +284,12 @@ class AssistantOrchestratorTest {
         verify(catalog).findById(20L);
         verify(catalog, never()).search(anyString(), anyString(), anyInt());
         verifyNoInteractions(selection);
+        ArgumentCaptor<AigcObservation> observation = ArgumentCaptor.forClass(AigcObservation.class);
+        verify(observationLogger, times(1)).log(observation.capture());
+        assertThat(observation.getValue().toLogFields())
+                .containsEntry("candidateCount", 1)
+                .containsEntry("recommendationCount", 1)
+                .containsEntry("terminalStage", "RECOMMENDING");
     }
 
     @Test
@@ -309,6 +331,12 @@ class AssistantOrchestratorTest {
 
         assertThat(sink.types).endsWith("delta", "done:NO_MATCH").doesNotContain("recommendations");
         verify(catalog, never()).search(anyString(), anyString(), anyInt());
+        ArgumentCaptor<AigcObservation> observation = ArgumentCaptor.forClass(AigcObservation.class);
+        verify(observationLogger, times(1)).log(observation.capture());
+        assertThat(observation.getValue().toLogFields())
+                .containsEntry("candidateCount", 0)
+                .containsEntry("recommendationCount", 0)
+                .containsEntry("terminalStage", "NO_MATCH");
     }
 
     @Test

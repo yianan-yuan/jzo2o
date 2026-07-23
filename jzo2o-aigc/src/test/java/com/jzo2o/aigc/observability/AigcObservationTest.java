@@ -1,14 +1,29 @@
 package com.jzo2o.aigc.observability;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AigcObservationTest {
+
+    private static final Set<String> ALLOWED_FIELDS = new LinkedHashSet<>(java.util.Arrays.asList(
+            "requestId", "anonymousUser", "provider", "model",
+            "sessionLoadMillis", "demandExtractionMillis", "serviceQueryMillis",
+            "firstDeltaMillis", "totalMillis", "modelCalls", "retries", "tokenUsage",
+            "candidateCount", "recommendationCount", "terminalStage", "errorCode", "degraded"));
 
     @Test
     void shouldExposeOnlyAllowListedStructuredFieldsWithAnonymousUser() {
@@ -79,5 +94,36 @@ class AigcObservationTest {
     @Test
     void loggerShouldRemainAnInjectableComponent() {
         assertThat(AigcObservationLogger.class).hasAnnotation(Component.class);
+    }
+
+    @Test
+    void loggerShouldWriteExactlyOneStandaloneJsonAllowListEvent() throws Exception {
+        AigcObservation observation = AigcObservation.start("req-json", 7L, "ollama", "qwen3:0.6b");
+        observation.finish("RECOMMENDING", null, false, 2, 1, 3, 0, 0);
+        Logger logger = (Logger) LoggerFactory.getLogger(AigcObservationLogger.class);
+        Level previousLevel = logger.getLevel();
+        ListAppender<ILoggingEvent> appender = new ListAppender<>();
+        appender.start();
+        logger.addAppender(appender);
+        logger.setLevel(Level.INFO);
+        try {
+            new AigcObservationLogger().log(observation);
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(previousLevel);
+            appender.stop();
+        }
+
+        assertThat(appender.list).hasSize(1);
+        String event = appender.list.get(0).getFormattedMessage();
+        JsonNode parsed = new ObjectMapper().readTree(event);
+        Set<String> actualFields = new LinkedHashSet<>();
+        parsed.fieldNames().forEachRemaining(actualFields::add);
+        assertThat(actualFields).containsExactlyInAnyOrderElementsOf(ALLOWED_FIELDS);
+        assertThat(event)
+                .doesNotStartWith("aigc_observation=")
+                .doesNotContain("userId", "message", "prompt", "messages", "candidates",
+                        "13800138000", "raw user");
+        assertThat(parsed.get("anonymousUser").textValue()).isEqualTo("53ed65896279");
     }
 }

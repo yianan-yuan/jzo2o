@@ -70,11 +70,22 @@ public class AssistantOrchestrator {
                     String message,
                     SseEventSink sink,
                     CancellationToken cancellationToken) {
+        run(session, cityCode, message, sink, cancellationToken, 0L);
+    }
+
+    public void run(AigcSession session,
+                    String cityCode,
+                    String message,
+                    SseEventSink sink,
+                    CancellationToken cancellationToken,
+                    long sessionLoadMillis) {
         if (cancelled(cancellationToken)) {
             return;
         }
-        runControlled(session, cityCode, message, sink, cancellationToken,
-                startObservation(Objects.requireNonNull(session, "session").getUserId()));
+        ObservationContext observation = startObservation(
+                Objects.requireNonNull(session, "session").getUserId());
+        observation.observation.recordSessionLoadMillis(sessionLoadMillis);
+        runControlled(session, cityCode, message, sink, cancellationToken, observation);
     }
 
     private void runControlled(AigcSession session,
@@ -199,7 +210,6 @@ public class AssistantOrchestrator {
         }
         Long serveId = previousIds.get(oneBasedIndex - 1);
         ServeAggregationResDTO candidate = serveId == null ? null : findCatalog(serveId, observation);
-        observation.candidateCount = candidate == null ? 0 : 1;
         if (cancelled(cancellationToken)) {
             return;
         }
@@ -210,6 +220,7 @@ public class AssistantOrchestrator {
             finishNoMatch(session, message, STALE_REFERENCE_TEXT, sink, cancellationToken, observation);
             return;
         }
+        observation.candidateCount = 1;
         List<RecommendationCardDTO> cards = cards(
                 Collections.singletonList(new SelectedService(serveId, "根据你刚才关注的服务继续说明")),
                 Collections.singletonList(candidate));

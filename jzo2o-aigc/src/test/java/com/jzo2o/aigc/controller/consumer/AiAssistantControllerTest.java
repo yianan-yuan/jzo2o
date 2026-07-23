@@ -5,12 +5,16 @@ import com.jzo2o.aigc.controller.consumer.dto.CreateSessionResDTO;
 import com.jzo2o.aigc.controller.consumer.dto.RecommendationCardDTO;
 import com.jzo2o.aigc.domain.AigcSession;
 import com.jzo2o.aigc.domain.ConversationStage;
+import com.jzo2o.aigc.domain.DemandDecision;
+import com.jzo2o.aigc.domain.DemandProfile;
 import com.jzo2o.aigc.exception.AigcErrorCode;
 import com.jzo2o.aigc.exception.AigcException;
 import com.jzo2o.aigc.exception.AigcExceptionAdvice;
 import com.jzo2o.aigc.guard.AigcRequestGuard;
 import com.jzo2o.aigc.guard.GenerationLease;
 import com.jzo2o.aigc.model.CancellationToken;
+import com.jzo2o.aigc.observability.AigcObservation;
+import com.jzo2o.aigc.observability.AigcObservationLogger;
 import com.jzo2o.aigc.properties.AigcProperties;
 import com.jzo2o.aigc.service.AigcSessionService;
 import com.jzo2o.aigc.service.AssistantOrchestrator;
@@ -25,6 +29,7 @@ import com.jzo2o.common.model.CurrentUserInfo;
 import com.jzo2o.mvc.advice.CommonExceptionAdvice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -57,11 +62,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.LongSupplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -119,6 +126,43 @@ class AiAssistantControllerTest {
         assertThat(response.getExpiresInSeconds()).isEqualTo(1800);
         verify(sessionService).create(7L);
         verifyNoInteractions(guard, orchestrator);
+    }
+
+    @Test
+    void shouldMeasurePreloadedSessionAndRecordItThroughTheProductionOrchestratorPath() {
+        QueuedExecutor executor = new QueuedExecutor();
+        ManualScheduler scheduler = new ManualScheduler();
+        DemandUnderstandingService understanding = mock(DemandUnderstandingService.class);
+        ServiceCatalogService catalog = mock(ServiceCatalogService.class);
+        CandidateSelectionService selection = mock(CandidateSelectionService.class);
+        ReplyGenerationService replyGenerator = mock(ReplyGenerationService.class);
+        AigcObservationLogger observationLogger = mock(AigcObservationLogger.class);
+        DemandProfile profile = new DemandProfile();
+        profile.setSummary("空调问题");
+        when(understanding.understand(same(session), eq("保洁"), any()))
+                .thenReturn(new DemandDecision(profile, true, "需要维修还是清洗？", null, null));
+        AssistantOrchestrator realOrchestrator = new AssistantOrchestrator(
+                sessionService, understanding, catalog, selection, replyGenerator, properties,
+                observationLogger);
+        long[] nanoTimes = {1_000_000_000L, 1_017_000_000L};
+        AtomicInteger clockCalls = new AtomicInteger();
+        LongSupplier nanoTime = () -> nanoTimes[clockCalls.getAndIncrement()];
+        AiAssistantController controller = new AiAssistantController(
+                userInfoHandler, sessionService, guard, realOrchestrator,
+                executor, scheduler, properties, nanoTime);
+
+        controller.sendMessage("s1", request());
+        executor.runQueued();
+
+        ArgumentCaptor<AigcObservation> observation = ArgumentCaptor.forClass(AigcObservation.class);
+        verify(observationLogger, times(1)).log(observation.capture());
+        assertThat(observation.getValue().toLogFields())
+                .containsEntry("sessionLoadMillis", 17L)
+                .containsEntry("terminalStage", "CLARIFYING");
+        assertThat(clockCalls).hasValue(2);
+        verify(sessionService, times(1)).loadOwned(7L, "s1");
+        verify(guard, times(1)).acquire(7L, "s1");
+        verifyNoInteractions(catalog, selection, replyGenerator);
     }
 
     @Test
@@ -210,13 +254,13 @@ class AiAssistantControllerTest {
             invocation.<SseEventSink>getArgument(3)
                     .done(ConversationStage.CLARIFYING, Collections.emptyList());
             return null;
-        }).when(orchestrator).run(same(session), eq("010"), eq("保洁"), any(), any());
+        }).when(orchestrator).run(same(session), eq("010"), eq("保洁"), any(), any(), anyLong());
 
         SseEmitter emitter = controller(Runnable::run, scheduler).sendMessage("s1", request());
 
         assertThat(emitter.getTimeout()).isEqualTo(95_000L);
         assertThat(scheduler.delays()).containsExactly(30L, 90L);
-        verify(orchestrator).run(same(session), eq("010"), eq("保洁"), any(), any());
+        verify(orchestrator).run(same(session), eq("010"), eq("保洁"), any(), any(), anyLong());
         verify(lease).close();
     }
 
@@ -229,7 +273,7 @@ class AiAssistantControllerTest {
                     .done(ConversationStage.CLARIFYING, Collections.emptyList());
             assertThat(token.isCancelled()).isTrue();
             return null;
-        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any());
+        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any(), anyLong());
 
         controller(Runnable::run, scheduler).sendMessage("s1", request());
 
@@ -254,7 +298,7 @@ class AiAssistantControllerTest {
             sink.done(ConversationStage.RECOMMENDING, Collections.emptyList());
             assertThat(total.cancelled).isTrue();
             return null;
-        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any());
+        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any(), anyLong());
 
         controller(Runnable::run, scheduler).sendMessage("s1", request());
 
@@ -269,7 +313,7 @@ class AiAssistantControllerTest {
             assertThat(invocation.<CancellationToken>getArgument(4).isCancelled()).isTrue();
             invocation.<SseEventSink>getArgument(3).delta("ignored");
             return null;
-        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any());
+        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any(), anyLong());
 
         controller(executor, scheduler).sendMessage("s1", request());
         scheduler.runDelay(30L);
@@ -292,7 +336,7 @@ class AiAssistantControllerTest {
             scheduler.runDelay(90L);
             assertThat(token.isCancelled()).isTrue();
             return null;
-        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any());
+        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any(), anyLong());
 
         controller(Runnable::run, scheduler).sendMessage("s1", request());
 
@@ -321,7 +365,7 @@ class AiAssistantControllerTest {
             invocation.<SseEventSink>getArgument(3)
                     .done(ConversationStage.RECOMMENDING, Collections.emptyList());
             return null;
-        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any());
+        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any(), anyLong());
 
         assertThatCode(() -> controller(Runnable::run, scheduler).sendMessage("s1", request()))
                 .doesNotThrowAnyException();
@@ -344,7 +388,7 @@ class AiAssistantControllerTest {
         doAnswer(invocation -> {
             assertThat(invocation.<CancellationToken>getArgument(4).isCancelled()).isTrue();
             return null;
-        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any());
+        }).when(orchestrator).run(same(session), anyString(), anyString(), any(), any(), anyLong());
         SseEmitter emitter = controller(executor, scheduler).sendMessage("s1", request());
 
         ((Runnable) callback(emitter, "timeoutCallback")).run();

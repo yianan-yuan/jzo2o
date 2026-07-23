@@ -14,6 +14,7 @@ import com.jzo2o.aigc.service.AssistantOrchestrator;
 import com.jzo2o.aigc.stream.SseEmitterEventSink;
 import com.jzo2o.common.handler.UserInfoHandler;
 import com.jzo2o.common.model.CurrentUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.LongSupplier;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,7 +52,9 @@ public class AiAssistantController {
     private final Executor executor;
     private final ScheduledExecutorService scheduler;
     private final AigcProperties properties;
+    private final LongSupplier nanoTime;
 
+    @Autowired
     public AiAssistantController(UserInfoHandler userInfoHandler,
                                  AigcSessionService sessionService,
                                  AigcRequestGuard guard,
@@ -58,6 +62,18 @@ public class AiAssistantController {
                                  @Qualifier("aigcExecutor") Executor executor,
                                  @Qualifier("aigcScheduler") ScheduledExecutorService scheduler,
                                  AigcProperties properties) {
+        this(userInfoHandler, sessionService, guard, orchestrator, executor, scheduler, properties,
+                System::nanoTime);
+    }
+
+    AiAssistantController(UserInfoHandler userInfoHandler,
+                          AigcSessionService sessionService,
+                          AigcRequestGuard guard,
+                          AssistantOrchestrator orchestrator,
+                          Executor executor,
+                          ScheduledExecutorService scheduler,
+                          AigcProperties properties,
+                          LongSupplier nanoTime) {
         this.userInfoHandler = userInfoHandler;
         this.sessionService = sessionService;
         this.guard = guard;
@@ -65,6 +81,7 @@ public class AiAssistantController {
         this.executor = executor;
         this.scheduler = scheduler;
         this.properties = properties;
+        this.nanoTime = nanoTime;
     }
 
     @PostMapping("/sessions")
@@ -80,7 +97,9 @@ public class AiAssistantController {
                                   @Valid @RequestBody AssistantMessageReqDTO request) {
         Long userId = currentUserId();
         validateRequest(request);
+        long sessionLoadStarted = nanoTime.getAsLong();
         AigcSession session = sessionService.loadOwned(userId, sessionId);
+        long sessionLoadMillis = elapsedMillis(sessionLoadStarted, nanoTime.getAsLong());
         GenerationLease lease = guard.acquire(userId, sessionId);
 
         SseEmitter emitter = new SseEmitter(SSE_TIMEOUT_MILLIS);
@@ -120,7 +139,8 @@ public class AiAssistantController {
         try {
             executor.execute(() -> {
                 try {
-                    orchestrator.run(session, request.getCityCode(), request.getMessage(), sink, cancellationToken);
+                    orchestrator.run(session, request.getCityCode(), request.getMessage(), sink, cancellationToken,
+                            sessionLoadMillis);
                 } catch (AigcException error) {
                     sink.error(error.getErrorCode(), error.getMessage());
                 } catch (RuntimeException error) {
@@ -171,6 +191,11 @@ public class AiAssistantController {
             throw new AigcException(AigcErrorCode.UNAUTHORIZED);
         }
         return currentUser.getId();
+    }
+
+    private long elapsedMillis(long startedNanos, long finishedNanos) {
+        long elapsedNanos = finishedNanos - startedNanos;
+        return elapsedNanos <= 0L ? 0L : elapsedNanos / 1_000_000L;
     }
 
     private static final class StreamLifecycle {
