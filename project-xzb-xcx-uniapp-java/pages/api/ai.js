@@ -26,3 +26,55 @@ export const streamAiMessage = (sessionId, params, handlers = {}) => streamReque
   onError: handlers.onError,
   onComplete: handlers.onComplete,
 });
+
+const unwrapResponse = (response) => {
+  const body = response && response.data;
+  return (body && (body.data || body.result || body)) || {};
+};
+
+export const sendChatMessage = (params) => new Promise((resolve, reject) => {
+  createAiSession().then((sessionResponse) => {
+    const sessionId = unwrapResponse(sessionResponse).sessionId;
+    if (!sessionId) {
+      reject(new Error('AIGC session was not created'));
+      return;
+    }
+
+    const city = uni.getStorageSync('city');
+    const requestParams = {
+      ...params,
+      cityCode: params.cityCode || (city && city.cityCode),
+    };
+    let reply = '';
+    let recommendations;
+    let stage;
+    let streamError;
+    let settled = false;
+    const settle = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      callback(value);
+    };
+
+    streamAiMessage(sessionId, requestParams, {
+      onEvent(event) {
+        if (event.type === 'delta') reply += event.data.text || '';
+        if (event.type === 'recommendations') recommendations = event.data;
+        if (event.type === 'done') stage = event.data.stage;
+        if (event.type === 'error') streamError = event.data;
+      },
+      onError(error) {
+        settle(reject, error);
+      },
+      onComplete() {
+        const data = { reply, recommendations, stage };
+        if (streamError) data.error = streamError;
+        settle(resolve, {
+          data: {
+            data,
+          },
+        });
+      },
+    });
+  }).catch(reject);
+});

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { streamRequest } from '../utils/streamRequest.js';
+import { sendChatMessage } from '../pages/api/ai.js';
 
 test('streams parsed events with authenticated SSE request options', () => {
   const previousUni = globalThis.uni;
@@ -67,6 +68,57 @@ test('forwards request failures and completes the parser', () => {
 
     assert.deepEqual(errors, [{ errMsg: 'request:fail' }]);
     assert.equal(completed, 1);
+  } finally {
+    globalThis.uni = previousUni;
+  }
+});
+
+test('adapts the new AIGC session stream to the legacy chat response shape', async () => {
+  const previousUni = globalThis.uni;
+  const requests = [];
+  let chunkHandler;
+
+  globalThis.uni = {
+    getStorageSync(key) {
+      if (key === 'token') return 'test-token';
+      if (key === 'city') return { cityCode: '110000' };
+      return undefined;
+    },
+    request(options) {
+      requests.push(options);
+      if (requests.length === 1) {
+        options.success({ data: { data: { sessionId: 'session-1' } } });
+        return {};
+      }
+      return {
+        onChunkReceived(handler) { chunkHandler = handler; },
+      };
+    },
+  };
+
+  try {
+    const responsePromise = sendChatMessage({ message: 'cleaning please' });
+    await Promise.resolve();
+    chunkHandler({ data: new TextEncoder().encode(
+      'event: delta\ndata: {"text":"Hello "}\n\n'
+        + 'event: delta\ndata: {"text":"there"}\n\n'
+        + 'event: recommendations\ndata: [{"serveId":1}]\n\n'
+        + 'event: done\ndata: {"stage":"RECOMMENDING"}\n\n',
+    ).buffer });
+    requests[1].complete();
+
+    assert.deepEqual(await responsePromise, {
+      data: {
+        data: {
+          reply: 'Hello there',
+          recommendations: [{ serveId: 1 }],
+          stage: 'RECOMMENDING',
+        },
+      },
+    });
+    assert.equal(requests[0].url, 'http://127.0.0.1:11500/aigc/consumer/assistant/sessions');
+    assert.equal(requests[1].url, 'http://127.0.0.1:11500/aigc/consumer/assistant/sessions/session-1/messages');
+    assert.deepEqual(requests[1].data, { message: 'cleaning please', cityCode: '110000' });
   } finally {
     globalThis.uni = previousUni;
   }
