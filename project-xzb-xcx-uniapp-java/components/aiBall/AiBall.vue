@@ -61,6 +61,12 @@ const handleClickAi = () => {
 };
 
 const handleToAiChat = () => {
+  if (!uni.getStorageSync('token')) {
+    uni.navigateTo({
+      url: '/pages/login/index?isLogin=1&reason=使用AI助手需要先登录',
+    });
+    return;
+  }
   uni.navigateTo({
     url: '/pages/ai-chat/index',
   });

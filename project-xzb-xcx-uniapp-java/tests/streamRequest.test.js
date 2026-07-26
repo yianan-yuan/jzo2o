@@ -42,6 +42,39 @@ test('streams parsed events with authenticated SSE request options', () => {
   }
 });
 
+test('delivers status, recommendations, and done events in order', () => {
+  const previousUni = globalThis.uni;
+  const events = [];
+  let chunkHandler;
+
+  globalThis.uni = {
+    getStorageSync() { return 'test-token'; },
+    request() {
+      return {
+        onChunkReceived(handler) { chunkHandler = handler; },
+      };
+    },
+  };
+
+  try {
+    streamRequest({
+      url: '/aigc/consumer/assistant/sessions/s1/messages',
+      data: {},
+      onEvent: (event) => events.push(event),
+    });
+    const payload =
+      'event: status\ndata: {"stage":"SEARCHING_SERVICES"}\n\n'
+      + 'event: recommendations\ndata: [{"serveId":1,"serveItemName":"日常保洁","price":99,"priceUnit":"次","actionType":"SERVICE_DETAIL"}]\n\n'
+      + 'event: done\ndata: {"stage":"RECOMMENDING","suggestedQuestions":["还有其他保洁吗？"]}\n\n';
+    chunkHandler({ data: new TextEncoder().encode(payload).buffer });
+
+    assert.deepEqual(events.map((event) => event.type), ['status', 'recommendations', 'done']);
+    assert.equal(events[1].data[0].serveId, 1);
+  } finally {
+    globalThis.uni = previousUni;
+  }
+});
+
 test('forwards request failures and completes the parser', () => {
   const previousUni = globalThis.uni;
   let requestOptions;
