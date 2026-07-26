@@ -27,4 +27,4 @@ The service uses safe local defaults for Ollama when private configuration is ab
 
 ## Gateway migration
 
-Configure the private gateway route to send `/aigc/**` to this service. After the route has been validated with the deployed access controls, remove the corresponding legacy gateway whitelist entry. Keep both the route configuration and whitelist operations in the private operations environment; neither belongs in this repository.
+Configure the private gateway route to send `/aigc/**` to `lb://jzo2o-aigc`, protect it with the `Token` filter, and set its response timeout to at least 100 seconds. Remove the legacy `/customer/consumer/ai/chat` whitelist entry; the customer AI controller is no longer deployed. Keep gateway routes, whitelist changes, and proxy response-buffering settings in the private operations environment; neither belongs in this repository.

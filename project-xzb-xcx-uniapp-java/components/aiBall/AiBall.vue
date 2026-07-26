@@ -24,7 +24,7 @@
           <view class="bodyTitle">AI 智能助手</view>
           <view class="bodyDesc">基于 Qwen3 大模型，随时随地为你解答问题</view>
         </view>
-        <view class="button" @click="handleToAiChat">立即体验AI助手</view>
+        <view class="button" @click="handleToAigc">立即体验AI助手</view>
         <view class="close" @click="handleClose">
           <image src="/static/guanbi@2x.png" mode="scaleToFill" />
         </view>
@@ -60,7 +60,7 @@ const handleClickAi = () => {
   show.value = false;
 };
 
-const handleToAiChat = () => {
+const handleToAigc = () => {
   if (!uni.getStorageSync('token')) {
     uni.navigateTo({
       url: '/pages/login/index?isLogin=1&reason=使用AI助手需要先登录',
