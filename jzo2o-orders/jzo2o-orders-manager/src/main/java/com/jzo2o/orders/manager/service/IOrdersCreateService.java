@@ -20,12 +20,8 @@ import com.jzo2o.orders.manager.model.dto.response.PlaceOrderResDTO;
 import java.util.List;
 
 /**
- * <p>
- * 下单服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-10
+* 下单服务类
+*
  */
 public interface IOrdersCreateService extends IService<Orders> {
 

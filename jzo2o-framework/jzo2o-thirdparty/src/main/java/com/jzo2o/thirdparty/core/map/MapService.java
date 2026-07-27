@@ -3,7 +3,6 @@ package com.jzo2o.thirdparty.core.map;
 import com.jzo2o.thirdparty.dto.MapLocationDTO;
 
 /**
- * @author itcast
  */
 public interface MapService {
     /**

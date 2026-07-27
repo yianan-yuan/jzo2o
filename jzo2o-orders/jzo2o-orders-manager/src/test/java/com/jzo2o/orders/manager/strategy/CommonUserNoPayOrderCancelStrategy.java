@@ -4,7 +4,6 @@ import com.jzo2o.orders.manager.model.dto.OrderCancelDTO;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description TODO
  * @date 2024/11/11 7:41

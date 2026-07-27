@@ -11,12 +11,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * <p>
- * 服务同步表
- * </p>
- *
- * @author itcast
- * @since 2023-07-10
+* 服务同步表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

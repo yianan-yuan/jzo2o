@@ -7,12 +7,8 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * <p>
- * 地址薄新增更新
- * </p>
- *
- * @author itcast
- * @since 2023-07-06
+* 地址薄新增更新
+*
  */
 @Data
 @ApiModel("地址薄新增更新")

@@ -33,12 +33,8 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 服务人员认证审核表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 服务人员认证审核表 服务实现类
+*
  */
 @Service
 public class WorkerCertificationAuditServiceImpl extends ServiceImpl<WorkerCertificationAuditMapper, WorkerCertificationAudit> implements IWorkerCertificationAuditService {

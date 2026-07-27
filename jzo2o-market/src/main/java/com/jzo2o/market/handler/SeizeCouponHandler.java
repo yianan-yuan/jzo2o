@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 抢券结果同步处理器
  * @date 2024/9/23 18:43

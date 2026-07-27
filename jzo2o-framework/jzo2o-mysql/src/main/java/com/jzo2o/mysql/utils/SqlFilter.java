@@ -10,10 +10,8 @@ import java.util.regex.Pattern;
 /**
  * sql 关键字过滤
  *
- * @author liushuai(liushuai711 @ gmail.com)
  * @version v4.0
  * @Description:
- * @since 2023/3/22 17:27
  */
 
 public class SqlFilter {

@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * 评价相关接口
  *
- * @author itcast
  * @create 2023/9/11 16:14
  **/
 @RestController("consumerEvaluationController")

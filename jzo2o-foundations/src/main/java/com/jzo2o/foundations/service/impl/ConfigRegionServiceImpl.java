@@ -13,12 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * <p>
- * 区域业务配置 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-21
+* 区域业务配置 服务实现类
+*
  */
 @Service
 public class ConfigRegionServiceImpl extends ServiceImpl<ConfigRegionMapper, ConfigRegion> implements IConfigRegionService {

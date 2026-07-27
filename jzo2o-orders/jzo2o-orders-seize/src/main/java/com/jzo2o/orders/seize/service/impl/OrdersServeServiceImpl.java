@@ -21,12 +21,8 @@ import java.util.stream.Collectors;
 import static com.jzo2o.orders.base.enums.ServeStatusEnum.*;
 
 /**
- * <p>
- * 服务任务 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 服务任务 服务实现类
+*
  */
 @Service
 public class OrdersServeServiceImpl extends ServiceImpl<OrdersServeMapper, OrdersServe> implements IOrdersServeService {

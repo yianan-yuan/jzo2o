@@ -5,7 +5,6 @@ import cn.hutool.core.util.ObjectUtil;
 /**
  * 支付渠道枚举
  *
- * @author zzj
  * @version 1.0
  */
 public enum PayChannelEnum {

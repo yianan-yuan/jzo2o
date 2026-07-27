@@ -7,12 +7,8 @@ import com.jzo2o.orders.history.model.domain.StatHour;
 import java.util.List;
 
 /**
- * <p>
- * 日统计表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-21
+* 日统计表 服务类
+*
  */
 public interface IStatDayService extends IService<StatDay> {
     /**

@@ -11,12 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 日统计表
- * </p>
- *
- * @author itcast
- * @since 2023-09-21
+* 日统计表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

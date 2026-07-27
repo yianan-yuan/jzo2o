@@ -6,12 +6,8 @@ import com.jzo2o.customer.model.dto.AgencyCertificationUpdateDTO;
 import com.jzo2o.customer.model.dto.response.AgencyCertificationResDTO;
 
 /**
- * <p>
- * 机构认证信息表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 机构认证信息表 服务类
+*
  */
 public interface IAgencyCertificationService extends IService<AgencyCertification> {
 

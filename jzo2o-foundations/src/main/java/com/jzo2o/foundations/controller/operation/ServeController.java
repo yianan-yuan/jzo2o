@@ -23,12 +23,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 前端控制器
+*
  */
 @Validated
 @RestController("operationServeController")

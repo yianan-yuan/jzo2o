@@ -5,7 +5,6 @@ import com.jzo2o.trade.model.domain.Trading;
 /**
  * jsapi支付、微信小程序支付
  *
- * @author zzj
  * @version 1.0
  */
 public interface JsapiPayService {

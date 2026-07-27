@@ -52,15 +52,14 @@ import org.junit.jupiter.api.Test;
 /**
  * 写的常见写法
  *
- * @author Jiaju Zhuang
  */
 
 public class WriteTest {
 
     /**
      * 最简单的写
-     * <p>1. 创建excel对应的实体对象 参照{@link com.alibaba.easyexcel.test.demo.write.DemoData}
-     * <p>2. 直接写即可
+1. 创建excel对应的实体对象 参照{@link com.alibaba.easyexcel.test.demo.write.DemoData}
+2. 直接写即可
      */
     @Test
     public void simpleWriteFirst() {
@@ -73,10 +72,8 @@ public class WriteTest {
 
     /**
      * 最简单的写
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 直接写即可
      */
     @Test
     public void simpleWrite() {
@@ -111,14 +108,10 @@ public class WriteTest {
 
     /**
      * 根据参数只导出指定列
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 根据自己或者排除自己需要的列
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 根据自己或者排除自己需要的列
+* 3. 直接写即可
      *
-     * @since 2.1.1
      */
     @Test
     public void excludeOrIncludeWrite() {
@@ -143,12 +136,9 @@ public class WriteTest {
 
     /**
      * 指定写入的列
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link IndexData}
-     * <p>
-     * 2. 使用{@link ExcelProperty}注解指定写入的列
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link IndexData}
+* 2. 使用{@link ExcelProperty}注解指定写入的列
+* 3. 直接写即可
      */
     @Test
     public void indexWrite() {
@@ -159,12 +149,9 @@ public class WriteTest {
 
     /**
      * 复杂头写入
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
-     * <p>
-     * 2. 使用{@link ExcelProperty}注解指定复杂的头
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
+* 2. 使用{@link ExcelProperty}注解指定复杂的头
+* 3. 直接写即可
      */
     @Test
     public void complexHeadWrite() {
@@ -175,12 +162,9 @@ public class WriteTest {
 
     /**
      * 重复多次写入
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
-     * <p>
-     * 2. 使用{@link ExcelProperty}注解指定复杂的头
-     * <p>
-     * 3. 直接调用二次写入即可
+* 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
+* 2. 使用{@link ExcelProperty}注解指定复杂的头
+* 3. 直接调用二次写入即可
      */
     @Test
     public void repeatedWrite() {
@@ -231,12 +215,9 @@ public class WriteTest {
 
     /**
      * 日期、数字或者自定义格式转换
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ConverterData}
-     * <p>
-     * 2. 使用{@link ExcelProperty}配合使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link ConverterData}
+* 2. 使用{@link ExcelProperty}配合使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
+* 3. 直接写即可
      */
     @Test
     public void converterWrite() {
@@ -247,10 +228,8 @@ public class WriteTest {
 
     /**
      * 图片导出
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ImageDemoData}
-     * <p>
-     * 2. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link ImageDemoData}
+* 2. 直接写即可
      */
     @Test
     public void imageWrite() throws Exception {
@@ -327,12 +306,9 @@ public class WriteTest {
 
     /**
      * 超链接、备注、公式、指定单个单元格的样式、单个单元格多种样式
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link WriteCellDemoData}
-     * <p>
-     * 2. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link WriteCellDemoData}
+* 2. 直接写即可
      *
-     * @since 3.0.0-beta1
      */
     @Test
     public void writeCellDataWrite() {
@@ -402,14 +378,10 @@ public class WriteTest {
 
     /**
      * 根据模板写入
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link IndexData}
-     * <p>
-     * 2. 使用{@link ExcelProperty}注解指定写入的列
-     * <p>
-     * 3. 使用withTemplate 写取模板
-     * <p>
-     * 4. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link IndexData}
+* 2. 使用{@link ExcelProperty}注解指定写入的列
+* 3. 使用withTemplate 写取模板
+* 4. 直接写即可
      */
     @Test
     public void templateWrite() {
@@ -423,12 +395,9 @@ public class WriteTest {
 
     /**
      * 列宽、行高
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData }
-     * <p>
-     * 2. 使用注解{@link ColumnWidth}、{@link HeadRowHeight}、{@link ContentRowHeight}指定宽度或高度
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData }
+* 2. 使用注解{@link ColumnWidth}、{@link HeadRowHeight}、{@link ContentRowHeight}指定宽度或高度
+* 3. 直接写即可
      */
     @Test
     public void widthAndHeightWrite() {
@@ -439,12 +408,9 @@ public class WriteTest {
 
     /**
      * 注解形式自定义样式
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoStyleData}
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link DemoStyleData}
+* 3. 直接写即可
      *
-     * @since 2.2.0-beta1
      */
     @Test
     public void annotationStyleWrite() {
@@ -455,12 +421,9 @@ public class WriteTest {
 
     /**
      * 拦截器形式自定义样式
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 创建一个style策略 并注册
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 创建一个style策略 并注册
+* 3. 直接写即可
      */
     @Test
     public void handlerStyleWrite() {
@@ -496,7 +459,6 @@ public class WriteTest {
             .doWrite(data());
 
         // 方法2: 使用easyexcel的方式完全自己写 不太推荐 尽量使用已有策略
-        // @since 3.0.0-beta2
         fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
         EasyExcel.write(fileName, DemoData.class)
             .registerWriteHandler(new CellWriteHandler() {
@@ -524,7 +486,6 @@ public class WriteTest {
             .doWrite(data());
 
         // 方法3: 使用poi的样式完全自己写 不推荐
-        // @since 3.0.0-beta2
         // 坑1：style里面有dataformat 用来格式化数据的 所以自己设置可能导致格式化注解不生效
         // 坑2：不要一直去创建style 记得缓存起来 最多创建6W个就挂了
         fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
@@ -559,14 +520,10 @@ public class WriteTest {
 
     /**
      * 合并单元格
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData} {@link DemoMergeData}
-     * <p>
-     * 2. 创建一个merge策略 并注册
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData} {@link DemoMergeData}
+* 2. 创建一个merge策略 并注册
+* 3. 直接写即可
      *
-     * @since 2.2.0-beta1
      */
     @Test
     public void mergeWrite() {
@@ -586,10 +543,8 @@ public class WriteTest {
 
     /**
      * 使用table去写入
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 然后写入table即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 然后写入table即可
      */
     @Test
     public void tableWrite() {
@@ -611,13 +566,10 @@ public class WriteTest {
 
     /**
      * 动态头，实时生成头写入
-     * <p>
-     * 思路是这样子的，先创建List<String>头格式的sheet仅仅写入头,然后通过table 不写入头的方式 去写入数据
+* 思路是这样子的，先创建List<String>头格式的sheet仅仅写入头,然后通过table 不写入头的方式 去写入数据
      *
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 然后写入table即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 然后写入table即可
      */
     @Test
     public void dynamicHeadWrite() {
@@ -631,18 +583,13 @@ public class WriteTest {
 
     /**
      * 自动列宽(不太精确)
-     * <p>
-     * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照 {@link LongestMatchColumnWidthStyleStrategy}
+* 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照 {@link LongestMatchColumnWidthStyleStrategy}
      * 重新实现.
-     * <p>
-     * poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
+* poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
      *
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link LongestMatchColumnWidthData}
-     * <p>
-     * 2. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
-     * <p>
-     * 3. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link LongestMatchColumnWidthData}
+* 2. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
+* 3. 直接写即可
      */
     @Test
     public void longestMatchColumnWidthWrite() {
@@ -655,14 +602,10 @@ public class WriteTest {
 
     /**
      * 下拉，超链接等自定义拦截器（上面几点都不符合但是要对单元格进行操作的参照这个）
-     * <p>
-     * demo这里实现2点。1. 对第一行第一列的头超链接到:https://github.com/alibaba/easyexcel 2. 对第一列第一行和第二行的数据新增下拉框，显示 测试1 测试2
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 注册拦截器 {@link CustomCellWriteHandler} {@link CustomSheetWriteHandler}
-     * <p>
-     * 2. 直接写即可
+* demo这里实现2点。1. 对第一行第一列的头超链接到:https://github.com/alibaba/easyexcel 2. 对第一列第一行和第二行的数据新增下拉框，显示 测试1 测试2
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 注册拦截器 {@link CustomCellWriteHandler} {@link CustomSheetWriteHandler}
+* 2. 直接写即可
      */
     @Test
     public void customHandlerWrite() {
@@ -674,12 +617,9 @@ public class WriteTest {
 
     /**
      * 插入批注
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 注册拦截器 {@link CommentWriteHandler}
-     * <p>
-     * 2. 直接写即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 注册拦截器 {@link CommentWriteHandler}
+* 2. 直接写即可
      */
     @Test
     public void commentWrite() {
@@ -692,12 +632,9 @@ public class WriteTest {
 
     /**
      * 可变标题处理(包括标题国际化等)
-     * <p>
-     * 简单的说用List<List<String>>的标题 但是还支持注解
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ConverterData}
-     * <p>
-     * 2. 直接写即可
+* 简单的说用List<List<String>>的标题 但是还支持注解
+* 1. 创建excel对应的实体对象 参照{@link ConverterData}
+* 2. 直接写即可
      */
     @Test
     public void variableTitleWrite() {

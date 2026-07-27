@@ -6,7 +6,6 @@ import static java.net.HttpURLConnection.HTTP_SERVER_ERROR;
 /**
  * 服务器异常
  *
- * @author itcast
  */
 public class ServerErrorException extends CommonException {
 

@@ -20,7 +20,6 @@ import java.util.List;
 
 
 /**
- * @author 86188
  */
 public class GatewayWebUtils {
 

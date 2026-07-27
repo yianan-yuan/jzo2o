@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
 /**
- * @author itcast
  */
 @Slf4j
 public abstract class AbstractStateMachine<T extends StateMachineSnapshot> {

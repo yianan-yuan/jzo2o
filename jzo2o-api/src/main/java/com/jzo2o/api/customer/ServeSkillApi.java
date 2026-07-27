@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * 内部接口 - 服务技能相关接口
  *
- * @author itcast
  */
 @FeignClient(contextId = "jzo2o-customer", value = "jzo2o-customer", path = "/customer/inner/serve-skill")
 public interface ServeSkillApi {

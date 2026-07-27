@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
- * @author 86188
  */
 public class LocalDateTimeSerializer extends JsonSerializer {
     public static final LocalDateTimeSerializer instance = new LocalDateTimeSerializer();

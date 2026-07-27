@@ -7,12 +7,8 @@ import com.jzo2o.market.model.dto.request.CouponIssueReqDTO;
 import java.util.List;
 
 /**
- * <p>
- *  发放优惠券服务类
- * </p>
- *
- * @author mrt
- * @since  2023-09-23
+*  发放优惠券服务类
+*
  */
 public interface ICouponIssueService extends IService<CouponIssue> {
 

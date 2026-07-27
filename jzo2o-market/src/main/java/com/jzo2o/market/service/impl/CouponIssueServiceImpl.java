@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 发放优惠券服务类
  * @date 2024/9/23 16:33

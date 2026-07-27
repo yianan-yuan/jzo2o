@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Native支付方式Face接口：商户生成二维码，用户扫描支付
  *
- * @author itcast
  */
 @Service
 @Slf4j

@@ -6,12 +6,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * <p>
- * 服务任务 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 服务任务 Mapper 接口
+*
  */
 public interface OrdersServeMapper extends BaseMapper<OrdersServe> {
 

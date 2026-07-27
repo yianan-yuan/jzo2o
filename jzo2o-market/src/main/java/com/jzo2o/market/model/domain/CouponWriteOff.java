@@ -9,12 +9,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 优惠券核销表
- * </p>
- *
- * @author itcast
- * @since 2023-09-22
+* 优惠券核销表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -6,7 +6,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 
 /**
- * @author zzj
  * @version 1.0
  */
 @Data

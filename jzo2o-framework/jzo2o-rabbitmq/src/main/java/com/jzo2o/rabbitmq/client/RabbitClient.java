@@ -28,7 +28,6 @@ import javax.annotation.Resource;
 /**
  * 消息处理类
  *
- * @author zzj
  * @version 1.0
  */
 @Slf4j

@@ -4,7 +4,6 @@ import com.jzo2o.common.expcetions.CommonException;
 import com.jzo2o.trade.model.domain.Trading;
 
 /**
- * @author itcast
  * @ClassName NativePayHandler.java
  * @Description Native支付方式Handler：商户生成二维码，用户扫描支付
  */

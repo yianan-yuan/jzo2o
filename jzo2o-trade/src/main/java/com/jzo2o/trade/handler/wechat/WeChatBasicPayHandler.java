@@ -30,7 +30,6 @@ import static com.jzo2o.trade.enums.TradingEnum.NATIVE_REFUND_FAIL;
 /**
  * 微信基础支付功能的实现
  *
- * @author zzj
  * @version 1.0
  */
 @Slf4j

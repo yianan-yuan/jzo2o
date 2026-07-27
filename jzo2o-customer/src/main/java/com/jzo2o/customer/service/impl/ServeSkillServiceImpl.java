@@ -32,12 +32,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * 服务技能表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-18
+* 服务技能表 服务实现类
+*
  */
 @Service
 public class ServeSkillServiceImpl extends ServiceImpl<ServeSkillMapper, ServeSkill> implements IServeSkillService {

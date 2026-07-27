@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 /**
  * 支付的基础功能
  *
- * @author zzj
  * @version 1.0
  */
 public interface BasicPayService {

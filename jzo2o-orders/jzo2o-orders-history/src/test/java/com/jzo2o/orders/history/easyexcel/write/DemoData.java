@@ -12,7 +12,6 @@ import lombok.Setter;
 /**
  * 基础数据类
  *
- * @author Jiaju Zhuang
  **/
 @Getter
 @Setter

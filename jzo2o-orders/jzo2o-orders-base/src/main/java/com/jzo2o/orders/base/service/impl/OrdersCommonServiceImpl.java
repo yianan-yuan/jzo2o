@@ -11,12 +11,8 @@ import com.jzo2o.orders.base.service.IOrdersCommonService;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- * 订单表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 订单表 服务实现类
+*
  */
 @Service
 public class OrdersCommonServiceImpl extends ServiceImpl<OrdersMapper, Orders> implements IOrdersCommonService {

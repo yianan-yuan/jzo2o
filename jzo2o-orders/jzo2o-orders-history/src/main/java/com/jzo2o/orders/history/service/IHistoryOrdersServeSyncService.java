@@ -6,12 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 服务单 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-21
+* 服务单 服务类
+*
  */
 public interface IHistoryOrdersServeSyncService extends IService<HistoryOrdersServeSync> {
 

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * @author itcast
  */
 @RestController("workerWorkerCertificationAuditController")
 @RequestMapping("/worker/worker-certification-audit")

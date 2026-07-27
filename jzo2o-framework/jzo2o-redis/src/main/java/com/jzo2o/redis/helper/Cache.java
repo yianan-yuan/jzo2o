@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 缓存接口
  *
- * @author Chopper
  */
 public interface Cache<T> {
 
@@ -179,8 +178,7 @@ public interface Cache<T> {
 
     /**
      * 计数器结果
-     * <p>
-     * 效率较高的 计数器 统计返回
+* 效率较高的 计数器 统计返回
      * 如需清零，按照普通key 移除即可
      *
      * @param key 计数器key
@@ -198,8 +196,7 @@ public interface Cache<T> {
 
     /**
      * 计数器结果
-     * <p>
-     * 效率较高的 计数器 统计返回
+* 效率较高的 计数器 统计返回
      * 如需清零，按照普通key 移除即可
      *
      * @param key key值

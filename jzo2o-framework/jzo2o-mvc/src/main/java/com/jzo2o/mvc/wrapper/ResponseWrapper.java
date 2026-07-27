@@ -10,7 +10,6 @@ import java.io.*;
 /**
  * 重写response返回值
  *
- * @author itcast
  */
 public class ResponseWrapper extends HttpServletResponseWrapper {
     private ByteArrayOutputStream buffer = null;

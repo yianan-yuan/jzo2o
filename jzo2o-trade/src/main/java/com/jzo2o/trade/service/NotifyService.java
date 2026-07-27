@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 支付通知
  *
- * @author zzj
  * @version 1.0
  */
 public interface NotifyService {

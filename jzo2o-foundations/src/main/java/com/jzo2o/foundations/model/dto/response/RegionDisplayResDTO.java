@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 /**
  * 用户端-区域展示响应模型
  *
- * @author itcast
  * @create 2023/8/28 15:54
  **/
 @Data

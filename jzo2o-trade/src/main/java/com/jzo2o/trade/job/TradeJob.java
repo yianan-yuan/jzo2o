@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * 交易任务，主要是查询订单的支付状态 和 退款的成功状态
  *
- * @author zzj
  * @version 1.0
  */
 @Slf4j

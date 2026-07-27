@@ -6,7 +6,6 @@ import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 /**
  * 服务不可用，注册中心找不到对应服务
  *
- * @author itcast
  */
 public class ServerUnavailableException extends CommonException {
     public ServerUnavailableException() {

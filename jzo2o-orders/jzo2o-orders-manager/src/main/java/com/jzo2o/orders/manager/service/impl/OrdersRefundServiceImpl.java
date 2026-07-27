@@ -11,12 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * <p>
- * 订单退款表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-07
+* 订单退款表 服务实现类
+*
  */
 @Service
 public class OrdersRefundServiceImpl extends ServiceImpl<OrdersRefundMapper, OrdersRefund> implements IOrdersRefundService {

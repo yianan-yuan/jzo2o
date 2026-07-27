@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 /**
  * jsapi提交支付请求对象
  *
- * @author zzj
  * @version 1.0
  */
 @Data

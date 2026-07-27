@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 测试责任链
  * @date 2024/11/20 14:52

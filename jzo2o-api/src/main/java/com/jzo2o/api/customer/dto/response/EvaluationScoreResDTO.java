@@ -9,7 +9,6 @@ import java.util.Map;
 /**
  * 评价评分
  *
- * @author itcast
  * @create 2023/9/16 09:59
  **/
 @Data

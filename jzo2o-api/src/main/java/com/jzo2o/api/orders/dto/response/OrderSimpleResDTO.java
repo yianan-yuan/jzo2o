@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 /**
  * 订单响应数据
  *
- * @author itcast
  * @create 2023/7/20 21:19
  **/
 @Data

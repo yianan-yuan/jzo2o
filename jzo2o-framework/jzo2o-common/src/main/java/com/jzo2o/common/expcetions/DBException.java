@@ -5,7 +5,6 @@ import static com.jzo2o.common.constants.ErrorInfo.Msg.PROCESS_FAILD;
 import static java.net.HttpURLConnection.HTTP_SERVER_ERROR;
 
 /**
- * @author itcast
  */
 public class DBException extends CommonException {
     public DBException() {

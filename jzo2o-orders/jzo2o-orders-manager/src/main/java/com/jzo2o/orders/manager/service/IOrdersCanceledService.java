@@ -4,12 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jzo2o.orders.base.model.domain.OrdersCanceled;
 
 /**
- * <p>
- *  订单取消服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-19
+*  订单取消服务类
+*
  */
 public interface IOrdersCanceledService extends IService<OrdersCanceled> {
 

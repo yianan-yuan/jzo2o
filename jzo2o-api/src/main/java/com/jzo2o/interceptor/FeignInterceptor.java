@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
  */import static com.jzo2o.common.constants.HeaderConstants.*;
 
 /**
- * @author itcast
  */
 @Slf4j
 @ConditionalOnBean(value = {UserInfoHandler.class, RequestIdHandler.class})

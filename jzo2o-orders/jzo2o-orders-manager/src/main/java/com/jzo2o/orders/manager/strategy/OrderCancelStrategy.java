@@ -5,7 +5,6 @@ import com.jzo2o.orders.manager.model.dto.OrderCancelDTO;
 /**
  * 订单取消策略类
  *
- * @author itcast
  * @create 2023/8/7 17:05
  **/
 public interface OrderCancelStrategy {

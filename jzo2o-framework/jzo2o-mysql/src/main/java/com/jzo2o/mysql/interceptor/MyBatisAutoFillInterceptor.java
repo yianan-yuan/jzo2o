@@ -15,7 +15,6 @@ import java.util.Map;
 import static com.jzo2o.mysql.constants.DbFiledConstants.*;
 
 /**
- * @author itcast
  */
 public class MyBatisAutoFillInterceptor implements InnerInterceptor {
 

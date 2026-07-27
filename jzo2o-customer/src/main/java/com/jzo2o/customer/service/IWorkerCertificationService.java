@@ -5,12 +5,8 @@ import com.jzo2o.customer.model.domain.WorkerCertification;
 import com.jzo2o.customer.model.dto.WorkerCertificationUpdateDTO;
 
 /**
- * <p>
- * 服务人员认证信息表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 服务人员认证信息表 服务类
+*
  */
 public interface IWorkerCertificationService extends IService<WorkerCertification> {
 

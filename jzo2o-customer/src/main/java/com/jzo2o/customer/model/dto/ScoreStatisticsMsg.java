@@ -5,7 +5,6 @@ import lombok.Data;
 /**
  * mq消息 - 评分统计数据
  *
- * @author itcast
  * @create 2023/9/14 15:56
  **/
 @Data

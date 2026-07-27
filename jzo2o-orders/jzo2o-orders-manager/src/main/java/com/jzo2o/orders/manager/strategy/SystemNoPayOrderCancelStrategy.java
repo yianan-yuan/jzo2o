@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 /**
  * 系统对待支付状态超时订单取消
  *
- * @author itcast
  * @create 2023/8/7 17:10
  **/
 @Component("0:NO_PAY")

@@ -27,7 +27,6 @@ import static com.jzo2o.orders.base.constants.RedisConstants.RedisKey.SERVE_PROV
 /**
  *
  * 服务提供者服务状态同步类
- * @author 86188
  */
 @Component
 public class ServeProviderStateSyncHandler extends AbstractCanalRabbitMqMsgListener<ServeProviderSync> {

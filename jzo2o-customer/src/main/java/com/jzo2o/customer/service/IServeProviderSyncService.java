@@ -5,12 +5,8 @@ import com.jzo2o.customer.model.domain.ServeProviderSync;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
- * <p>
- * 评分同步列表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-07
+* 评分同步列表 服务类
+*
  */
 public interface IServeProviderSyncService extends IService<ServeProviderSync> {
 

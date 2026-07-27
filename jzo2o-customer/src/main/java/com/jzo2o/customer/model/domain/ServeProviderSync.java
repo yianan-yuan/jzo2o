@@ -13,12 +13,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 评分同步列表
- * </p>
- *
- * @author itcast
- * @since 2023-08-07
+* 评分同步列表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

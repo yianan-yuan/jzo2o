@@ -1,7 +1,6 @@
 package com.jzo2o.statemachine.core;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 状态快照基础类
  * @date 2023/9/18 11:07

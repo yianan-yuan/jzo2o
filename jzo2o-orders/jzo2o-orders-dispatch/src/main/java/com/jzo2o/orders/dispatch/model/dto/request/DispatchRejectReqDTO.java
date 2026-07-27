@@ -7,7 +7,6 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * @author itcast
  */
 @ApiModel("接单模型")
 @Data

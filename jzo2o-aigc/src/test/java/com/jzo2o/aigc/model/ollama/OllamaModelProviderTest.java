@@ -98,6 +98,21 @@ class OllamaModelProviderTest {
     }
 
     @Test
+    void completeJsonSendsSchemaToConstrainStructuredOutput() throws Exception {
+        enqueue(200, "{\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"summary\\\":\\\"保洁\\\"}\"},\"done\":true}");
+        JsonNode schema = objectMapper.createObjectNode().put("type", "object");
+
+        provider.completeJson(
+                Collections.singletonList(new ModelMessage("user", "需要日常保洁")),
+                0D,
+                new CancellationToken(),
+                schema);
+
+        JsonNode body = objectMapper.readTree(requestBodies.get(0));
+        assertThat(body.path("format")).isEqualTo(schema);
+    }
+
+    @Test
     void streamEmitsEachNdjsonDeltaAndUsesConfiguredDefaults() throws Exception {
         enqueue(200,
                 "{\"message\":{\"content\":\"适合\"},\"done\":false}\n"

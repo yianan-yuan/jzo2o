@@ -12,12 +12,8 @@ import com.jzo2o.orders.history.model.dto.response.HistoryOrdersPageResDTO;
 import java.util.List;
 
 /**
- * <p>
- * 订单表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-11
+* 订单表 服务类
+*
  */
 public interface IHistoryOrdersService extends IService<HistoryOrders> {
 

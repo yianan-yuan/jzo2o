@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 /**
  * 读的常见写法
  *
- * @author Jiaju Zhuang
  */
 
 @Slf4j
@@ -34,9 +33,9 @@ public class ReadTest {
 
     /**
      * 最简单的读
-     * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
-     * <p>3. 直接读即可
+1. 创建excel对应的实体对象 参照{@link DemoData}
+2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+3. 直接读即可
      */
     @Test
     public void simpleReadFirst() {
@@ -47,12 +46,9 @@ public class ReadTest {
 
     /**
      * 最简单的读
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
-     * <p>
-     * 3. 直接读即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+* 3. 直接读即可
      */
     @Test
     public void simpleRead() {
@@ -126,12 +122,9 @@ public class ReadTest {
     /**
      * 指定列的下标或者列名
      *
-     * <p>
-     * 1. 创建excel对应的实体对象,并使用{@link ExcelProperty}注解. 参照{@link IndexOrNameData}
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
-     * <p>
-     * 3. 直接读即可
+* 1. 创建excel对应的实体对象,并使用{@link ExcelProperty}注解. 参照{@link IndexOrNameData}
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
+* 3. 直接读即可
      */
     @Test
     public void indexOrNameRead() {
@@ -142,12 +135,9 @@ public class ReadTest {
 
     /**
      * 读多个或者全部sheet,这里注意一个sheet不能读取多次，多次读取需要重新读取文件
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
-     * <p>
-     * 3. 直接读即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+* 3. 直接读即可
      */
     @Test
     public void repeatedRead() {
@@ -173,14 +163,10 @@ public class ReadTest {
 
     /**
      * 日期、数字或者自定义格式转换
-     * <p>
-     * 默认读的转换器{@link DefaultConverterLoader#loadDefaultReadConverter()}
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ConverterData}.里面可以使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
-     * <p>
-     * 3. 直接读即可
+* 默认读的转换器{@link DefaultConverterLoader#loadDefaultReadConverter()}
+* 1. 创建excel对应的实体对象 参照{@link ConverterData}.里面可以使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
+* 3. 直接读即可
      */
     @Test
     public void converterRead() {
@@ -197,12 +183,9 @@ public class ReadTest {
     /**
      * 多行头
      *
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
-     * <p>
-     * 3. 设置headRowNumber参数，然后读。 这里要注意headRowNumber如果不指定， 会根据你传入的class的{@link ExcelProperty#value()}里面的表头的数量来决定行数，
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+* 3. 设置headRowNumber参数，然后读。 这里要注意headRowNumber如果不指定， 会根据你传入的class的{@link ExcelProperty#value()}里面的表头的数量来决定行数，
      * 如果不传入class则默认为1.当然你指定了headRowNumber不管是否传入class都是以你传入的为准。
      */
     @Test
@@ -217,12 +200,9 @@ public class ReadTest {
     /**
      * 读取表头数据
      *
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
-     * <p>
-     * 3. 直接读即可
+* 1. 创建excel对应的实体对象 参照{@link DemoData}
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+* 3. 直接读即可
      */
     @Test
     public void headerRead() {
@@ -233,17 +213,12 @@ public class ReadTest {
 
     /**
      * 额外信息（批注、超链接、合并单元格信息读取）
-     * <p>
-     * 由于是流式读取，没法在读取到单元格数据的时候直接读取到额外信息，所以只能最后通知哪些单元格有哪些额外信息
+* 由于是流式读取，没法在读取到单元格数据的时候直接读取到额外信息，所以只能最后通知哪些单元格有哪些额外信息
      *
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoExtraData}
-     * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExtraListener}
-     * <p>
-     * 3. 直接读即可
+* 1. 创建excel对应的实体对象 参照{@link DemoExtraData}
+* 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExtraListener}
+* 3. 直接读即可
      *
-     * @since 2.2.0-beat1
      */
     @Test
     public void extraRead() {
@@ -261,14 +236,10 @@ public class ReadTest {
     /**
      * 读取公式和单元格类型
      *
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link CellDataReadDemoData}
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
-     * <p>
-     * 3. 直接读即可
+* 1. 创建excel对应的实体对象 参照{@link CellDataReadDemoData}
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+* 3. 直接读即可
      *
-     * @since 2.2.0-beat1
      */
     @Test
     public void cellDataRead() {
@@ -280,12 +251,9 @@ public class ReadTest {
     /**
      * 数据转换等异常处理
      *
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ExceptionDemoData}
-     * <p>
-     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExceptionListener}
-     * <p>
-     * 3. 直接读即可
+* 1. 创建excel对应的实体对象 参照{@link ExceptionDemoData}
+* 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExceptionListener}
+* 3. 直接读即可
      */
     @Test
     public void exceptionRead() {

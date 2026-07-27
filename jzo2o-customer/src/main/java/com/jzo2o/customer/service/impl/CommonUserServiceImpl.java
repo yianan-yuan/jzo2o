@@ -23,12 +23,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-04
+* 服务实现类
+*
  */
 @Service
 public class CommonUserServiceImpl extends ServiceImpl<CommonUserMapper, CommonUser> implements ICommonUserService {

@@ -5,7 +5,6 @@ import lombok.Data;
 /**
  * 关联id对应评分数据
  *
- * @author itcast
  * @create 2023/9/16 10:28
  **/
 @Data

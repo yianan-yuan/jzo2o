@@ -7,7 +7,6 @@ import java.util.Objects;
 /**
  * 用户信息上下文，主要存储用户id
  *
- * @author itcast
  */
 public class UserContext {
     private static ThreadLocal<CurrentUser> THREAD_LOCAL_USER = new ThreadLocal<CurrentUser>();

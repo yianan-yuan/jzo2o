@@ -6,12 +6,8 @@ import com.jzo2o.orders.base.model.domain.ServeProviderSync;
 import java.util.List;
 
 /**
- * <p>
- * 机构服务端更新服务时间 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-09
+* 机构服务端更新服务时间 服务类
+*
  */
 public interface IServeProviderSyncService extends IService<ServeProviderSync> {
 

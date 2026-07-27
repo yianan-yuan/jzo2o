@@ -11,12 +11,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- *
- * </p>
- *
- * @author itcast
- * @since 2023-07-04
+*
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

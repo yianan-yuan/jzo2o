@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * @author itcast
  */
 @FeignClient(contextId = "jzo2o-trade", value = "jzo2o-trade", path = "/trade/inner/native")
 public interface NativePayApi {

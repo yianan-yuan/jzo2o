@@ -7,7 +7,6 @@ import lombok.Data;
 /**
  * 根据对象属性分页查询评价请求
  *
- * @author itcast
  * @create 2023/9/11 21:19
  **/
 @Data

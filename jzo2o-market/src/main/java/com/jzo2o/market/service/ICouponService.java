@@ -15,12 +15,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-16
+*  服务类
+*
  */
 public interface ICouponService extends IService<Coupon> {
 

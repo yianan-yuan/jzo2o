@@ -5,12 +5,8 @@ import com.jzo2o.foundations.model.domain.Operator;
 import com.jzo2o.foundations.model.dto.OperatorAddDTO;
 
 /**
- * <p>
- * 运营人员 服务类
- * </p>
- *
- * @author author
- * @since 2023-06-29
+* 运营人员 服务类
+*
  */
 public interface IOperatorService extends IService<Operator> {
 

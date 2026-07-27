@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * 首页服务图标
  *
- * @author itcast
  * @create 2023/7/7 14:50
  **/
 @Data

@@ -16,7 +16,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @author 86188
  */
 @Component
 public class ServeCanalDataSyncHandler extends AbstractCanalRabbitMqMsgListener<ServeSync> {

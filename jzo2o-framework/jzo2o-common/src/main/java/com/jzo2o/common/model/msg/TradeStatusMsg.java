@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 /**
  * 交易状态消息
  *
- * @author itcast
  */
 @Data
 @SuperBuilder

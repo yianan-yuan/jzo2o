@@ -51,12 +51,8 @@ import static com.jzo2o.common.constants.ErrorInfo.Code.SEIZE_COUPON_FAILD;
 import static com.jzo2o.market.constants.RedisConstants.RedisKey.*;
 
 /**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-16
+* 服务实现类
+*
  */
 @Service
 @Slf4j

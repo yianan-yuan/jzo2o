@@ -22,7 +22,6 @@ import reactor.core.publisher.Mono;
 /**
  * token解析过滤器
  *
- * @author 86188
  */
 @Slf4j
 public class TokenFilter implements GatewayFilter {

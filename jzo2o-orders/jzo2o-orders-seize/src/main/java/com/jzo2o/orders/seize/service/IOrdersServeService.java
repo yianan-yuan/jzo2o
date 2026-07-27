@@ -8,12 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- * 服务任务 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 服务任务 服务类
+*
  */
 public interface IOrdersServeService extends IService<OrdersServe> {
 

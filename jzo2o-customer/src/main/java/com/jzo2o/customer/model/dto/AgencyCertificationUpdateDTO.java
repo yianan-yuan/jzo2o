@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 /**
  * 机构认证信息更新模型
  *
- * @author itcast
  * @create 2023/9/6 10:49
  **/
 @Data

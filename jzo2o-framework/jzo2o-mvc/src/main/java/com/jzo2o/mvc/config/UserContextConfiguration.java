@@ -8,7 +8,6 @@
 //import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 //
 ///**
-// * @author itcast
 // */
 //@Configuration
 //public class UserContextConfiguration implements WebMvcConfigurer {

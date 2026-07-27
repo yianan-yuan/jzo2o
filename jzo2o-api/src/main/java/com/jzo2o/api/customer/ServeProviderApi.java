@@ -13,7 +13,6 @@ import java.util.Map;
 /**
  * 内部接口 - 服务人员/机构相关接口
  *
- * @author itcast
  */
 @FeignClient(contextId = "jzo2o-customer", value = "jzo2o-customer", path = "/customer/inner/serve-provider", qualifiers = "customerServeProviderApi")
 public interface ServeProviderApi {

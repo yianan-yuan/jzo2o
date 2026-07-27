@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 /**
  * 交易单状态响应数据
  *
- * @author itcast
  * @create 2023/9/11 10:41
  **/
 @Data

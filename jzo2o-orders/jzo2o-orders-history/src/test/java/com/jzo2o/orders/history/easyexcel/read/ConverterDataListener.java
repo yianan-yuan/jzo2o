@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 模板的读取类
  *
- * @author Jiaju Zhuang
  */
 @Slf4j
 public class ConverterDataListener implements ReadListener<ConverterData> {

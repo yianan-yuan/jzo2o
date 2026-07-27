@@ -7,7 +7,6 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
  * 请求异常，
  * 使用场景：请求参数不合法，频繁请求
  *
- * @author itcast
  */
 public class BadRequestException extends CommonException {
 

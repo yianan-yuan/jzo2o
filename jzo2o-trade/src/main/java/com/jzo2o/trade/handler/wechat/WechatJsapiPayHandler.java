@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * 微信jsapi的实现
  *
- * @author zzj
  * @version 1.0
  */
 @Component("wechatJsapiPayHandler")

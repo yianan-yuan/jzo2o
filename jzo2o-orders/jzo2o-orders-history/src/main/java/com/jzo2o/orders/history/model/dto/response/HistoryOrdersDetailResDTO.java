@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * @author itcast
  */
 @Data
 @ApiModel("历史订单详情信息")

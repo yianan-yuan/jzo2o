@@ -14,12 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- * 机构下属服务人员
- * </p>
- *
- * @author itcast
- * @since 2023-07-18
+* 机构下属服务人员
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

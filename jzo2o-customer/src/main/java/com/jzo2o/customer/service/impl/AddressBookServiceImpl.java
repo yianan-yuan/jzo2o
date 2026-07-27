@@ -30,12 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
- * 地址薄 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-06
+* 地址薄 服务实现类
+*
  */
 @Service
 public class AddressBookServiceImpl extends ServiceImpl<AddressBookMapper, AddressBook> implements IAddressBookService {

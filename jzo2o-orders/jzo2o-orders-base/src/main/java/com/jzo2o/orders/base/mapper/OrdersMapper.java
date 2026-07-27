@@ -9,12 +9,8 @@ import org.apache.ibatis.annotations.Update;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 订单表 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 订单表 Mapper 接口
+*
  */
 public interface OrdersMapper extends BaseMapper<Orders> {
 

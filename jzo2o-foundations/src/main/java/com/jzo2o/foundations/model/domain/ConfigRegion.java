@@ -9,12 +9,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 区域业务配置
- * </p>
- *
- * @author itcast
- * @since 2023-08-21
+* 区域业务配置
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

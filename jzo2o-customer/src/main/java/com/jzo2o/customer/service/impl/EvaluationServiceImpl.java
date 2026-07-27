@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
 /**
  * 评价服务 - 业务层
  *
- * @author itcast
  * @create 2023/9/11 16:19
  **/
 @Slf4j

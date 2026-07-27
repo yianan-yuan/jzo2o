@@ -5,12 +5,8 @@ import com.jzo2o.orders.base.enums.BreachHaviorTypeEnum;
 import com.jzo2o.orders.base.model.domain.BreachRecord;
 
 /**
- * <p>
- * 违约记录 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 违约记录 服务类
+*
  */
 public interface IBreachRecordService extends IService<BreachRecord> {
 

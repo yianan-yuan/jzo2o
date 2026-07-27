@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.Resource;
 
 /**
- * @author itcast
  */
 @Configuration
 public class JwtConfiguration {

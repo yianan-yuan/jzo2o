@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 /**
  * 交易前置处理接口
  *
- * @author itcast
  */
 public interface BeforePayHandler {
 

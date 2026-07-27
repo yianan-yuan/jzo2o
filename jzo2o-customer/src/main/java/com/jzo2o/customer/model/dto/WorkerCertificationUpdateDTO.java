@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 /**
  * 服务人员认证更新模型
  *
- * @author itcast
  * @create 2023/9/6 11:37
  **/
 @Data

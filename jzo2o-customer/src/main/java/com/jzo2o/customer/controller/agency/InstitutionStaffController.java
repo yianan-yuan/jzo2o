@@ -19,12 +19,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * <p>
- * 机构下属服务人员 前端控制器
- * </p>
- *
- * @author itcast
- * @since 2023-07-18
+* 机构下属服务人员 前端控制器
+*
  */
 @RestController("agencyInstitutionStaffController")
 @RequestMapping("/agency/institution-staff")

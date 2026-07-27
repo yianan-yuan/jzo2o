@@ -11,12 +11,8 @@ import com.jzo2o.market.model.dto.response.SeizeCouponInfoResDTO;
 import java.util.List;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-16
+*  服务类
+*
  */
 public interface IActivityService extends IService<Activity> {
 

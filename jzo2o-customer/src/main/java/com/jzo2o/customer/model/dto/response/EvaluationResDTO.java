@@ -10,7 +10,6 @@ import java.util.Date;
  * 评价完整信息
  * 连带了评价的回复
  *
- * @author itcast
  * @create 2023/4/22 16:34
  **/
 @Data

@@ -11,14 +11,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author itcast
- * @since 2023-09-16
- */
 @Data
 public class CouponInfoResDTO implements Serializable {
 

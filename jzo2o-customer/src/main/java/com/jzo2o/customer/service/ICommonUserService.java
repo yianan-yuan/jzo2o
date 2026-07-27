@@ -8,12 +8,8 @@ import com.jzo2o.customer.model.domain.CommonUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
- * <p>
- * 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-04
+* 服务类
+*
  */
 public interface ICommonUserService extends IService<CommonUser> {
 

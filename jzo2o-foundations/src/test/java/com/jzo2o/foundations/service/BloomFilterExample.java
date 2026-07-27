@@ -6,7 +6,6 @@ import com.google.common.hash.Funnels;
 import java.nio.charset.Charset;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description TODO
  * @date 2023/10/25 17:10

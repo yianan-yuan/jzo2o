@@ -8,7 +8,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
- * @author itcast
  */
 @Slf4j
 @EnableCaching

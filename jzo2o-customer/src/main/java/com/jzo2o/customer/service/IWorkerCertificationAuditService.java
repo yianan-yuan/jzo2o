@@ -10,12 +10,8 @@ import com.jzo2o.customer.model.dto.response.RejectReasonResDTO;
 import com.jzo2o.customer.model.dto.response.WorkerCertificationAuditResDTO;
 
 /**
- * <p>
- * 服务人员认证审核表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 服务人员认证审核表 服务类
+*
  */
 public interface IWorkerCertificationAuditService extends IService<WorkerCertificationAudit> {
     /**

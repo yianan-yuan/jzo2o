@@ -10,12 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 违约记录
- * </p>
- *
- * @author itcast
- * @since 2023-08-06
+* 违约记录
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

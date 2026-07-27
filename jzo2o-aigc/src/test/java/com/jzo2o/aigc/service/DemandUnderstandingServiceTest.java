@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 class DemandUnderstandingServiceTest {
 
-    private final ModelProvider provider = mock(ModelProvider.class);
+    private final ModelProvider provider = mock(ModelProvider.class, CALLS_REAL_METHODS);
     private final AigcProperties properties = new AigcProperties();
     private DemandUnderstandingService service;
 
@@ -73,14 +74,33 @@ class DemandUnderstandingServiceTest {
     }
 
     @Test
-    void shouldRejectDemandAfterSecondInvalidOutput() {
+    void shouldAnswerGreetingWithoutCallingModel() {
+
+        DemandDecision result = service.understand(session(), "你好", new CancellationToken());
+
+        assertThat(result.isNeedsClarification()).isTrue();
+        assertThat(result.getClarifyingQuestion()).isEqualTo("您好！请告诉我需要哪类家政服务，例如日常保洁、空调维修或厨卫维修。");
+        verify(provider, never()).complete(anyList(), anyDouble(), any());
+    }
+
+    @Test
+    void shouldListServicesWithoutCallingModelForGenericServiceQuery() {
+
+        DemandDecision result = service.understand(session(), "有什么服务", new CancellationToken());
+
+        assertThat(result.isNeedsClarification()).isFalse();
+        assertThat(result.getProfile().getSearchKeyword()).isEmpty();
+        verify(provider, never()).complete(anyList(), anyDouble(), any());
+    }
+
+    @Test
+    void shouldFallbackToServiceKeywordAfterSecondInvalidOutputForClearNeed() {
         when(provider.complete(anyList(), anyDouble(), any())).thenReturn("not-json", "[]");
 
-        assertThatThrownBy(() -> service.understand(session(), "打扫", new CancellationToken()))
-                .isInstanceOfSatisfying(AigcException.class,
-                        error -> assertThat(error.getErrorCode()).isEqualTo(AigcErrorCode.MODEL_OUTPUT_INVALID));
-        verify(provider).complete(anyList(), eq(0.2D), any());
-        verify(provider).complete(anyList(), eq(0D), any());
+        DemandDecision result = service.understand(session(), "我想预约日常保洁", new CancellationToken());
+
+        assertThat(result.isNeedsClarification()).isFalse();
+        assertThat(result.getProfile().getSearchKeyword()).isEqualTo("保洁");
     }
 
     @Test
@@ -117,6 +137,20 @@ class DemandUnderstandingServiceTest {
                 demandJson("第二个", "", "{}", false, null, "4"));
 
         assertModelOutputInvalid(() -> service.understand(session(), "第二个怎么样", new CancellationToken()));
+    }
+
+    @Test
+    void shouldIgnoreSpuriousRecommendationIndexWhenThereAreNoPreviousRecommendations() {
+        AigcSession session = session();
+        session.setLastRecommendedServeIds(java.util.Collections.emptyList());
+        when(provider.complete(anyList(), anyDouble(), any())).thenReturn(
+                demandJson("用户需求不明确", "", "{}", true, "请问您需要哪类家政服务？", "1"));
+
+        DemandDecision result = service.understand(session, "你好", new CancellationToken());
+
+        assertThat(result.isNeedsClarification()).isTrue();
+        assertThat(result.getReferencedRecommendationIndex()).isNull();
+        assertThat(result.getReferencedServeId()).isNull();
     }
 
     @Test

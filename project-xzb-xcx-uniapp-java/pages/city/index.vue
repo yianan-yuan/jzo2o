@@ -96,6 +96,7 @@ import { ref, onMounted, watch, getCurrentInstance } from 'vue';
 import { getAddress, getCityList } from '../api/address';
 import Popup from '@/components/Operate/index.vue';
 import { tostTip } from '../../utils';
+import { shouldOpenLocationSetting } from '../../utils/location-authorization';
 const customBar = ref('87px'); //导航栏高度
 const winHeight = ref(0); //屏幕高度
 const itemHeight = ref(0); //每个item的高度
@@ -184,36 +185,35 @@ const getWarpWeft = () => {
   // 1. 获取用户授权信息
   wx.getSetting({
     success(res) {
-      // 2. 判断用户是否已经授权地理位置
-      if (res.authSetting['scope.userLocation']) {
-        // 用户已经授权地理位置，直接调用获取地理位置接口
-        // 获取定位
-        uni.getLocation({
-          type: 'gcj02',
-          success: function (res) {
-            position.value = res;
-            getCity(position.value);
-            // 延时500毫秒，保证效果，展现出定位中的过程
-            setTimeout(() => {
-              po_tips.value = '重新定位';
-            }, 500);
-          },
-          fail: function (res) {
-            if (res.errMsg.indexOf('wx.onLocationChange') > -1) {
-              tostTip('频繁调用会增加电量损耗,请稍后再试');
-            } else {
-              tostTip('请开启手机的定位相关功能');
-            }
-            setTimeout(() => {
-              po_tips.value = '定位失败';
-            }, 500);
-            disPosition.value = true;
-          },
-        });
-      } else {
+      // 用户曾明确拒绝定位时，才引导其进入设置页重新开启。
+      if (shouldOpenLocationSetting(res.authSetting)) {
         po_tips.value = '定位失败';
         operate.value.popup.open();
+        return;
       }
+      // 首次授权与已授权都必须调用 getLocation，首次调用会触发微信原生授权弹窗。
+      uni.getLocation({
+        type: 'gcj02',
+        success: function (res) {
+          position.value = res;
+          getCity(position.value);
+          // 延时500毫秒，保证效果，展现出定位中的过程
+          setTimeout(() => {
+            po_tips.value = '重新定位';
+          }, 500);
+        },
+        fail: function (res) {
+          if (res.errMsg.indexOf('wx.onLocationChange') > -1) {
+            tostTip('频繁调用会增加电量损耗,请稍后再试');
+          } else {
+            tostTip('请开启手机的定位相关功能');
+          }
+          setTimeout(() => {
+            po_tips.value = '定位失败';
+          }, 500);
+          disPosition.value = true;
+        },
+      });
     },
     fail(res) {
       po_tips.value = '定位失败';

@@ -17,7 +17,6 @@ import javax.annotation.Resource;
 /**
  * 未支付时订单取消处理器
  *
- * @author itcast
  * @create 2023/8/17 18:08
  **/
 @Slf4j

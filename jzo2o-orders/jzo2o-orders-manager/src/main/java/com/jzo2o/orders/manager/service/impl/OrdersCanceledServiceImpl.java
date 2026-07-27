@@ -7,12 +7,8 @@ import com.jzo2o.orders.manager.service.IOrdersCanceledService;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *  订单取消服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-19
+*  订单取消服务实现类
+*
  */
 @Service
 public class OrdersCanceledServiceImpl extends ServiceImpl<OrdersCanceledMapper, OrdersCanceled> implements IOrdersCanceledService {

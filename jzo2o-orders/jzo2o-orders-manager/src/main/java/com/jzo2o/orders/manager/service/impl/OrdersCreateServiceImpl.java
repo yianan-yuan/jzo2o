@@ -57,12 +57,8 @@ import static com.jzo2o.orders.base.constants.RedisConstants.Lock.ORDERS_SHARD_K
 import static com.jzo2o.orders.base.constants.RedisConstants.Lock.ORDERS_SHARD_KEY_ID_LOCK;
 
 /**
- * <p>
- * 下单服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-10
+* 下单服务类
+*
  */
 @Slf4j
 @Service

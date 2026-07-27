@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 /**
  * 系统派单状态取消订单
  *
- * @author itcast
  * @create 2023/8/7 17:10
  **/
 @Component("0:DISPATCHING")

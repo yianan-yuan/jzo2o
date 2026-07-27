@@ -11,7 +11,6 @@ import com.jzo2o.trade.model.domain.PayChannel;
 import com.jzo2o.trade.service.PayChannelService;
 
 /**
- * @author zzj
  * @version 1.0
  */
 public class AlipayConfig {

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 订单状态机
  * @date 2024/11/13 9:07

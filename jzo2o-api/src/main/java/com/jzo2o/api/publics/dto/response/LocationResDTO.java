@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 /**
  * 经纬度
  *
- * @author itcast
  * @create 2023/8/25 20:01
  **/
 @Data

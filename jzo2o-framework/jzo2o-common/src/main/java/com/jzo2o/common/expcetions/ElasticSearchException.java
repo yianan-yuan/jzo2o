@@ -1,7 +1,6 @@
 package com.jzo2o.common.expcetions;
 
 /**
- * @author itcast
  */
 public class ElasticSearchException extends CommonException {
     public ElasticSearchException() {

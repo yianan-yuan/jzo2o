@@ -6,12 +6,8 @@ import com.jzo2o.orders.base.model.domain.HistoryOrdersServeSync;
 import java.util.List;
 
 /**
- * <p>
- * 服务任务 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-14
+* 服务任务 服务类
+*
  */
 public interface IHistoryOrdersServeSyncCommonService extends IService<HistoryOrdersServeSync> {
 }

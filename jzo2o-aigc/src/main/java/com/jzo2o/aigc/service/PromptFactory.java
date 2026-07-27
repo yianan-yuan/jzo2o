@@ -1,6 +1,7 @@
 package com.jzo2o.aigc.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jzo2o.aigc.controller.consumer.dto.RecommendationCardDTO;
@@ -47,6 +48,21 @@ public class PromptFactory {
                 new ModelMessage("user", sanitizer.sanitize(userText)));
     }
 
+    public JsonNode demandResponseSchema() {
+        ObjectNode schema = objectSchema("summary", "searchKeyword", "constraints",
+                "needsClarification", "clarifyingQuestion", "referencedRecommendationIndex");
+        ObjectNode fields = schema.putObject("properties");
+        fields.putObject("summary").put("type", "string");
+        fields.putObject("searchKeyword").put("type", "string");
+        ObjectNode constraints = fields.putObject("constraints");
+        constraints.put("type", "object");
+        constraints.set("additionalProperties", textSchema());
+        fields.putObject("needsClarification").put("type", "boolean");
+        fields.set("clarifyingQuestion", nullableSchema("string"));
+        fields.set("referencedRecommendationIndex", nullableSchema("integer"));
+        return schema;
+    }
+
     public List<ModelMessage> selectionMessages(DemandProfile profile,
                                                  List<ServeAggregationResDTO> candidates) {
         ObjectNode input = objectMapper.createObjectNode();
@@ -76,6 +92,20 @@ public class PromptFactory {
         return Arrays.asList(
                 new ModelMessage("system", SELECTION_SYSTEM_PROMPT),
                 new ModelMessage("user", input.toString()));
+    }
+
+    public JsonNode selectionResponseSchema() {
+        ObjectNode schema = objectSchema("selected");
+        ObjectNode selected = schema.putObject("properties").putObject("selected");
+        selected.put("type", "array");
+        ObjectNode item = selected.putObject("items");
+        item.put("type", "object");
+        item.put("additionalProperties", false);
+        item.putArray("required").add("serveId").add("reason");
+        ObjectNode itemFields = item.putObject("properties");
+        itemFields.putObject("serveId").put("type", "integer");
+        itemFields.putObject("reason").put("type", "string");
+        return schema;
     }
 
     public List<ModelMessage> replyMessages(DemandProfile profile,
@@ -139,6 +169,27 @@ public class PromptFactory {
             }
         }
         return node;
+    }
+
+    private ObjectNode objectSchema(String... requiredFields) {
+        ObjectNode schema = objectMapper.createObjectNode();
+        schema.put("type", "object");
+        schema.put("additionalProperties", false);
+        ArrayNode required = schema.putArray("required");
+        for (String field : requiredFields) {
+            required.add(field);
+        }
+        return schema;
+    }
+
+    private ObjectNode textSchema() {
+        return objectMapper.createObjectNode().put("type", "string");
+    }
+
+    private ObjectNode nullableSchema(String type) {
+        ObjectNode schema = objectMapper.createObjectNode();
+        schema.putArray("type").add(type).add("null");
+        return schema;
     }
 
     private void putSanitized(ObjectNode node, String field, String value) {

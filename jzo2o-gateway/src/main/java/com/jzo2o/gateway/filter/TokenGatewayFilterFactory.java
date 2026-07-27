@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * @author 86188
  */
 @Component
 public class TokenGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {

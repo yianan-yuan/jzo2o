@@ -17,12 +17,8 @@ import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 /**
- * <p>
- * 服务表 前端控制器
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 服务表 前端控制器
+*
  */
 @Validated
 @RestController("operationServeItemController")

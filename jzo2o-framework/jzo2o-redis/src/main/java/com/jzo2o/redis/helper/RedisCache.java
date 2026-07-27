@@ -15,7 +15,6 @@ import java.util.function.Consumer;
 /**
  * redis 缓存实现
  *
- * @author Chopepr
  */
 @Slf4j
 @Component

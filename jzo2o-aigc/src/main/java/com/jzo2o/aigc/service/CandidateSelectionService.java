@@ -28,6 +28,7 @@ public class CandidateSelectionService {
 
     private static final int HARD_CANDIDATE_LIMIT = 20;
     private static final int HARD_SELECTION_LIMIT = 3;
+    private static final String FALLBACK_REASON = "根据你的需求匹配到该服务";
 
     private final ModelProvider provider;
     private final ObjectMapper objectMapper;
@@ -55,19 +56,42 @@ public class CandidateSelectionService {
             }
         }
         List<ModelMessage> messages = promptFactory.selectionMessages(profile, promptCandidates);
-        String firstOutput = provider.complete(
-                messages, properties.getModel().getTemperature(), cancellationToken);
+        String firstOutput = provider.completeJson(
+                messages, properties.getModel().getTemperature(), cancellationToken,
+                promptFactory.selectionResponseSchema());
         try {
-            return parse(firstOutput, allowedIds);
+            return withCandidateFallback(parse(firstOutput, allowedIds), promptCandidates);
         } catch (InvalidModelOutput ignored) {
             ensureActive(cancellationToken);
-            String retryOutput = provider.complete(messages, 0D, cancellationToken);
+            String retryOutput = provider.completeJson(
+                    messages, 0D, cancellationToken, promptFactory.selectionResponseSchema());
             try {
-                return parse(retryOutput, allowedIds);
+                return withCandidateFallback(parse(retryOutput, allowedIds), promptCandidates);
             } catch (InvalidModelOutput invalidAgain) {
                 throw new AigcException(AigcErrorCode.MODEL_OUTPUT_INVALID);
             }
         }
+    }
+
+    private List<SelectedService> withCandidateFallback(List<SelectedService> selected,
+                                                        List<ServeAggregationResDTO> candidates) {
+        if (!selected.isEmpty()) {
+            return selected;
+        }
+        int configuredLimit = Math.max(1, properties.getMaxRecommendations());
+        int resultLimit = Math.min(HARD_SELECTION_LIMIT, configuredLimit);
+        Set<Long> seen = new LinkedHashSet<>();
+        List<SelectedService> result = new ArrayList<>();
+        for (ServeAggregationResDTO candidate : candidates) {
+            if (candidate == null || candidate.getId() == null || !seen.add(candidate.getId())) {
+                continue;
+            }
+            result.add(new SelectedService(candidate.getId(), FALLBACK_REASON));
+            if (result.size() == resultLimit) {
+                break;
+            }
+        }
+        return result;
     }
 
     private List<SelectedService> parse(String output, Set<Long> allowedIds) {

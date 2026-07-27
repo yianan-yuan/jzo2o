@@ -6,12 +6,8 @@ import com.jzo2o.customer.model.dto.request.BankAccountUpsertReqDTO;
 import com.jzo2o.customer.model.dto.response.BankAccountResDTO;
 
 /**
- * <p>
- * 银行账户 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 银行账户 服务类
+*
  */
 public interface IBankAccountService extends IService<BankAccount> {
 

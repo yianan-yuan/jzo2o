@@ -35,12 +35,8 @@ import static com.jzo2o.orders.base.constants.EsIndexConstants.SERVER_PROVIDER_I
 import static com.jzo2o.orders.base.constants.RedisConstants.RedisKey.DISPATCH_LIST;
 
 /**
- * <p>
- * 派单池 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 派单池 服务实现类
+*
  */
 @Service
 @Slf4j

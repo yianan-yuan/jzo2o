@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @author 86188
  */
 
 @Getter

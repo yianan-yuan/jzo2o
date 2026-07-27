@@ -8,12 +8,8 @@ import com.jzo2o.orders.dispatch.model.dto.ServeProviderDTO;
 import java.util.List;
 
 /**
- * <p>
- * 派单池 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 派单池 服务类
+*
  */
 public interface IOrdersDispatchService extends IService<OrdersDispatch> {
 

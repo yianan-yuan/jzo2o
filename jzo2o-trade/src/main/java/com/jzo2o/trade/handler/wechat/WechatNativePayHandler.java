@@ -20,7 +20,6 @@ import java.util.Map;
 /**
  * 微信二维码支付
  *
- * @author zzj
  * @version 1.0
  */
 @Component("wechatNativePayHandler")

@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 /**
  * 数组工具类
  * @ClassName ArrayUtils
- * @author itheima
- * @since 2022/7/10 12:02
  * @version 1.0.0
  **/
 public class ArrayUtils extends ArrayUtil {

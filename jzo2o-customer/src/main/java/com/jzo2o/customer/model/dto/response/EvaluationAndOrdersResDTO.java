@@ -10,7 +10,6 @@ import java.util.Date;
 /**
  * 评价和订单响应数据
  *
- * @author itcast
  * @create 2023/4/22 16:34
  **/
 @Data

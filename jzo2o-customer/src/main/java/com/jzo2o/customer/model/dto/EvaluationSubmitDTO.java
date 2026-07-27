@@ -8,7 +8,6 @@ import lombok.Data;
 /**
  * 评价提交对象
  *
- * @author itcast
  * @create 2023/4/22 10:32
  **/
 @Data

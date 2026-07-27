@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 读取转换异常
  *
- * @author Jiaju Zhuang
  */
 @Slf4j
 public class DemoExceptionListener implements ReadListener<ExceptionDemoData> {

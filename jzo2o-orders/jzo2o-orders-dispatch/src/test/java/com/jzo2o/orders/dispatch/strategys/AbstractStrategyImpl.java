@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 抽象策略类
  * @date 2023/11/24 11:53

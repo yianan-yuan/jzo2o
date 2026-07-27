@@ -7,12 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 订单表 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-09-11
+* 订单表 Mapper 接口
+*
  */
 public interface HistoryOrdersMapper extends BaseMapper<HistoryOrders> {
 

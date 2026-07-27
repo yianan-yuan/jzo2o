@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * test util
  *
- * @author Jiaju Zhuang
  */
 @Slf4j
 public class TestUtil {

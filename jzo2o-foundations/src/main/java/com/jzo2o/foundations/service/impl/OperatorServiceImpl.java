@@ -14,12 +14,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * <p>
- * 运营人员 服务实现类
- * </p>
- *
- * @author author
- * @since 2023-06-29
+* 运营人员 服务实现类
+*
  */
 @Service
 public class OperatorServiceImpl extends ServiceImpl<OperatorMapper, Operator> implements IOperatorService {

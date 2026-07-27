@@ -1,7 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { streamRequest } from '../utils/streamRequest.js';
 import { sendChatMessage } from '../pages/api/ai.js';
+
+test('uses the mini-program uni runtime directly for streamed requests', async () => {
+  const source = await readFile(
+    fileURLToPath(new URL('../utils/streamRequest.js', import.meta.url)),
+    'utf8',
+  );
+
+  assert.doesNotMatch(source, /globalThis\.uni\.request/);
+  assert.match(source, /\buni\.request\(/);
+});
 
 test('streams parsed events with authenticated SSE request options', () => {
   const previousUni = globalThis.uni;

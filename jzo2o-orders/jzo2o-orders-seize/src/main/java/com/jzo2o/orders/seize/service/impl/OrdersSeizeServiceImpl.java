@@ -71,12 +71,8 @@ import static com.jzo2o.orders.base.constants.RedisConstants.RedisKey.ORDERS_RES
 import static com.jzo2o.orders.base.constants.RedisConstants.RedisKey.SERVE_PROVIDER_STATE;
 
 /**
- * <p>
- * 抢单池 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-15
+* 抢单池 服务实现类
+*
  */
 @Service
 @Slf4j

@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * @author 86188
  */
 @Data
 @ApiModel("机构注册信息")

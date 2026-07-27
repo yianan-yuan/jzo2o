@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 /**
  * 业务数据快照
  *
- * @author itcast
  */
 @Data
 @Builder

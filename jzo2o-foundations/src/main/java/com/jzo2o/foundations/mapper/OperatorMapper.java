@@ -7,12 +7,8 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * <p>
- * 运营人员 Mapper 接口
- * </p>
- *
- * @author author
- * @since 2023-07-03
+* 运营人员 Mapper 接口
+*
  */
 public interface OperatorMapper extends BaseMapper<Operator> {
 

@@ -12,7 +12,6 @@ import java.awt.*;
 /**
  * 二维码生成参数配置
  *
- * @author zzj
  * @version 1.0
  */
 @Data

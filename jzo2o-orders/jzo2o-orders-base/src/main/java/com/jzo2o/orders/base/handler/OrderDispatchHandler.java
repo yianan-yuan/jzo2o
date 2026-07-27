@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 /**
  * 订单派送处理器
  *
- * @author itcast
  * @create 2023/8/17 18:08
  **/
 @Slf4j

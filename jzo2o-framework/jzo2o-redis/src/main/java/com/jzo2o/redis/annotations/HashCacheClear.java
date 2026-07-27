@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 /**
  * 分页缓存中重要的字段，必须马上同步，
  * 单个缓存清理优先于批量处理，如果批量清理请不要设置dataId
- * @author 86188
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})

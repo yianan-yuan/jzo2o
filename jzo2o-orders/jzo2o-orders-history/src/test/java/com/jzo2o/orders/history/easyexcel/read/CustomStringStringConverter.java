@@ -9,7 +9,6 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 /**
  * String and string converter
  *
- * @author Jiaju Zhuang
  */
 public class CustomStringStringConverter implements Converter<String> {
     @Override

@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * 内部接口 - 机构下属服务人员相关接口
  *
- * @author itcast
  */
 @FeignClient(contextId = "jzo2o-customer", value = "jzo2o-customer", path = "/customer/inner/institution-staff")
 public interface InstitutionStaffApi {

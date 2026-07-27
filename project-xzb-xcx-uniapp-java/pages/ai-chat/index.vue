@@ -7,7 +7,7 @@
           <view v-if="msg.role === 'assistant'" class="aiMsg">
             <view class="avatar aiAvatar">🤖</view>
             <view class="assistantContent">
-              <view class="bubble aiBubble">{{ msg.content }}</view>
+              <view class="bubble aiBubble">{{ displayAssistantContent(msg) }}</view>
               <view v-if="msg.stage" class="streamStage">{{ formatStage(msg.stage) }}</view>
               <view v-if="msg.error" class="streamError">{{ formatError(msg.error) }}</view>
               <view v-if="msg.recommendations && msg.recommendations.length" class="recommendations">
@@ -23,7 +23,6 @@
             <view class="avatar userAvatar">我</view>
           </view>
         </view>
-        <view v-if="loading" class="messageItem assistant"><view class="aiMsg"><view class="avatar aiAvatar">🤖</view><view class="bubble aiBubble loadingBubble">AI 正在思考…</view></view></view>
         <view v-if="suggestedQuestions.length" class="suggestedQuestions">
           <view v-for="question in suggestedQuestions" :key="question" class="questionChip" @click="askSuggestedQuestion(question)">{{ question }}</view>
         </view>
@@ -41,6 +40,7 @@
 import { nextTick, ref } from 'vue';
 import { onLoad, onUnload } from '@dcloudio/uni-app';
 import { createAiSession, streamAiMessage } from '../api/ai.js';
+import { appendAssistantDelta, createPendingAssistantMessage, displayAssistantContent } from './chat-message-state.js';
 
 const messages = ref([]);
 const inputText = ref('');
@@ -104,7 +104,7 @@ const sendMessage = async () => {
       loading.value = false;
       return;
     }
-    const assistantMessage = { role: 'assistant', content: '', recommendations: [], stage: '', error: null };
+    const assistantMessage = createPendingAssistantMessage();
     messages.value.push(assistantMessage);
     activeTask.value = streamAiMessage(currentSessionId, { message: text, cityCode: city.cityCode }, {
       onEvent(event) {
@@ -112,7 +112,7 @@ const sendMessage = async () => {
           streamStage.value = event.data.stage || '';
           assistantMessage.stage = streamStage.value;
         }
-        if (event.type === 'delta') assistantMessage.content += event.data.text || '';
+        if (event.type === 'delta') appendAssistantDelta(assistantMessage, event.data.text);
         if (event.type === 'recommendations') assistantMessage.recommendations = event.data || [];
         if (event.type === 'done') {
           streamStage.value = event.data.stage || streamStage.value;

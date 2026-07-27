@@ -9,12 +9,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 发放优惠券
- * </p>
- *
- * @author mrt
- * @since 2024-09-23
+* 发放优惠券
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * 内部接口 - 订单相关接口
  *
- * @author itcast
  */
 @FeignClient(contextId = "jzo2o-orders-manager", value = "jzo2o-orders-manager", path = "/orders-manager/inner/orders", configuration = MyQueryMapEncoder.class)
 public interface OrdersApi {

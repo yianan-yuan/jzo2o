@@ -8,7 +8,6 @@ import org.springframework.amqp.core.MessagePostProcessor;
 /**
  * 延迟消息处理器
  *
- * @author itcast
  */
 public class DelayMessagePostProcessor implements MessagePostProcessor {
 

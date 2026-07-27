@@ -10,12 +10,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 服务表
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 服务表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -32,12 +32,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * 服务单 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-11
+* 服务单 服务实现类
+*
  */
 @Service
 @Slf4j

@@ -15,12 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
- * 机构服务端更新服务时间 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-09
+* 机构服务端更新服务时间 服务实现类
+*
  */
 @Service
 public class ServeProviderSyncServiceImpl extends ServiceImpl<ServeProviderSyncMapper, ServeProviderSync> implements IServeProviderSyncService {

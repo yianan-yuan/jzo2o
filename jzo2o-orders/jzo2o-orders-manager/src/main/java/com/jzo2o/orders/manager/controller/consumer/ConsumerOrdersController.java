@@ -24,7 +24,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @author itcast
  */
 @RestController("consumerOrdersController")
 @Api(tags = "用户端-订单相关接口")

@@ -7,12 +7,8 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * <p>
- * 银行账户新增或更新请求体
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 银行账户新增或更新请求体
+*
  */
 @Data
 @ApiModel("银行账户新增或更新请求体")

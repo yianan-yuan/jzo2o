@@ -11,12 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- * 订单统计
- * </p>
- *
- * @author itcast
- * @since 2023-09-21
+* 订单统计
+*
  */
 public interface HistoryOrdersSyncMapper extends BaseMapper<HistoryOrdersSync> {
     List<HistoryOrders> migrate(@Param("yesterDayStartTime") LocalDateTime yesterDayStartTime,

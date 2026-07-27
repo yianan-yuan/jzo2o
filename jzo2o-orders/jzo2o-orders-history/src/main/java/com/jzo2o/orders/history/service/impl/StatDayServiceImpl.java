@@ -22,12 +22,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- * 日统计表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-21
+* 日统计表 服务实现类
+*
  */
 @Service
 public class StatDayServiceImpl extends ServiceImpl<StatDayMapper, StatDay> implements IStatDayService {

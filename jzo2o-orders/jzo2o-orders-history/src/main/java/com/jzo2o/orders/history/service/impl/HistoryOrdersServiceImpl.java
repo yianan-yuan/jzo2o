@@ -32,12 +32,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * 订单表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-11
+* 订单表 服务实现类
+*
  */
 @Service
 public class HistoryOrdersServiceImpl extends ServiceImpl<HistoryOrdersMapper, HistoryOrders> implements IHistoryOrdersService {

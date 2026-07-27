@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 /**
  * 状态机持久化实现
  *
- * @author itcast
  **/
 @Component
 @Primary

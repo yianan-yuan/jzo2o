@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 /**
  * 聚合统计数据
  *
- * @author itcast
  * @create 2023/9/21 18:15
  **/
 @Data

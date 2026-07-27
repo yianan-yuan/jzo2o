@@ -15,12 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * <p>
- * 运营端 - 机构下属服务人员相关接口
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 运营端 - 机构下属服务人员相关接口
+*
  */
 @Validated
 @RestController("operationInstitutionStaffController")

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 /**
  * 全部评价配置信息
  *
- * @author itcast
  * @create 2023/9/23 10:46
  **/
 @Data

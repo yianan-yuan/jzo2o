@@ -14,12 +14,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * <p>
- * 服务技能表 前端控制器
- * </p>
- *
- * @author itcast
- * @since 2023-07-18
+* 服务技能表 前端控制器
+*
  */
 @RestController("agencyServeSkillController")
 @RequestMapping("/agency/serve-skill")

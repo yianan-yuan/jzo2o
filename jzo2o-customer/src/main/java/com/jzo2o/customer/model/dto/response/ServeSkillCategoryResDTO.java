@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * 服务技能目录响应结果
  *
- * @author itcast
  * @create 2023/7/18 19:16
  **/
 @Data

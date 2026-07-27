@@ -9,12 +9,8 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * <p>
- * 违约记录 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 违约记录 Mapper 接口
+*
  */
 public interface BreachRecordMapper extends BaseMapper<BreachRecord> {
 

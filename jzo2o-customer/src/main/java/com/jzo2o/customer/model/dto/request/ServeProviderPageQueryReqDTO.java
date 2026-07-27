@@ -6,12 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * <p>
- * 服务人员/机构分页查询请求
- * </p>
- *
- * @author itcast
- * @since 2023-07-06
+* 服务人员/机构分页查询请求
+*
  */
 @Data
 @ApiModel("服务人员/机构分页查询请求")

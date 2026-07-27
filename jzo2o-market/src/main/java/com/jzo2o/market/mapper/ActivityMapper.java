@@ -4,12 +4,8 @@ import com.jzo2o.market.model.domain.Activity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-09-16
+*  Mapper 接口
+*
  */
 public interface ActivityMapper extends BaseMapper<Activity> {
 

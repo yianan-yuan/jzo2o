@@ -7,7 +7,6 @@ import lombok.Data;
 /**
  * 更新用户请求
  *
- * @author itcast
  * @create 2023/7/17 17:10
  **/
 @Data

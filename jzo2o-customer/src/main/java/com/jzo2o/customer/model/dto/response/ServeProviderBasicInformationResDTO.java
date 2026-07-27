@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * 服务人员/机构基本信息
  *
- * @author itcast
  * @create 2023/9/6 16:32
  **/
 @Data

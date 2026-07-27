@@ -13,12 +13,8 @@ import com.jzo2o.orders.manager.model.dto.response.ServeProviderServeResDTO;
 import java.util.List;
 
 /**
- * <p>
- * 服务服务单 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-26
+* 服务服务单 服务类
+*
  */
 public interface IOrdersServeManagerService extends IService<OrdersServe> {
 

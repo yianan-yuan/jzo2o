@@ -20,12 +20,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * <p>
- * 地址薄 前端控制器
- * </p>
- *
- * @author itcast
- * @since 2023-07-06
+* 地址薄 前端控制器
+*
  */
 @RestController("consumerAddressBookController")
 @RequestMapping("/consumer/address-book")

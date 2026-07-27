@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 /**
  * springCache缓存同步任务
  *
- * @author itcast
  * @create 2023/8/15 18:14
  **/
 @Slf4j

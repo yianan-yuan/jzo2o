@@ -7,7 +7,6 @@ import lombok.Data;
 /**
  * 服务人员/机构更新状态请求
  *
- * @author itcast
  * @create 2023/7/18 21:34
  **/
 @Data

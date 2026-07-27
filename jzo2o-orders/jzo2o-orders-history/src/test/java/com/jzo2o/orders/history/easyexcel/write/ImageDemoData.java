@@ -17,7 +17,6 @@ import lombok.Setter;
 /**
  * 图片导出类
  *
- * @author Jiaju Zhuang
  */
 @Getter
 @Setter
@@ -36,14 +35,12 @@ public class ImageDemoData {
     /**
      * 根据url导出
      *
-     * @since 2.1.1
      */
     private URL url;
 
     /**
      * 根据文件导出 并设置导出的位置。
      *
-     * @since 3.0.0-beta1
      */
     private WriteCellData<Void> writeCellDataFile;
 }

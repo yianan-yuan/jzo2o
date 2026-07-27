@@ -10,12 +10,8 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * <p>
- * 城市编码表
- * </p>
- *
- * @author itcast
- * @since 2023-07-04
+* 城市编码表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

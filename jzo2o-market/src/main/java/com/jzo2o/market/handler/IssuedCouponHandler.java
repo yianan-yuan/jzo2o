@@ -11,7 +11,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 自动发放优惠券处理器
  * 根据活动id从待发放记录表查找该活动的待发放记录，然后批量进行发放，一次拿出1000条进行发放。

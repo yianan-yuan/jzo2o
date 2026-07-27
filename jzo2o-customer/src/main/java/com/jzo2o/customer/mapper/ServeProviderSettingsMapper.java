@@ -8,12 +8,8 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * <p>
- * 服务人员/机构附属信息 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-07-20
+* 服务人员/机构附属信息 Mapper 接口
+*
  */
 public interface ServeProviderSettingsMapper extends BaseMapper<ServeProviderSettings> {
 

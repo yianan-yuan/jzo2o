@@ -7,7 +7,6 @@ import lombok.Data;
 /**
  * 服务人员申请资质认证
  *
- * @author itcast
  * @create 2023/9/6 10:24
  **/
 @Data

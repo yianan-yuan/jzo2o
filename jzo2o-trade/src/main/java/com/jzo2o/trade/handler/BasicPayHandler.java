@@ -7,7 +7,6 @@ import com.jzo2o.trade.model.domain.Trading;
 /**
  * 基础支付功能的定义，具体业务由不同的支付渠道实现
  *
- * @author zzj
  * @version 1.0
  */
 public interface BasicPayHandler {

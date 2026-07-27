@@ -5,7 +5,6 @@ import lombok.Data;
 /**
  * 订单取消请求
  *
- * @author itcast
  * @create 2023/8/7 08:59
  **/
 @Data

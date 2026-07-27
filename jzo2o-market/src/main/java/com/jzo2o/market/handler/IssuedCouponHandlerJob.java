@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 自动发放优惠券任务
  * @date 2024/9/23 19:49

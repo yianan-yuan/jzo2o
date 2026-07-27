@@ -9,12 +9,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 服务类型表
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 服务类型表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -19,12 +19,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- * 小时统计表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-21
+* 小时统计表 服务实现类
+*
  */
 @Service
 public class StatHourServiceImpl extends ServiceImpl<StatHourMapper, StatHour> implements IStatHourService {

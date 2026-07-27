@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 /**
  * 机构认证信息响应值
  *
- * @author itcast
  * @create 2023/9/6 11:51
  **/
 @Data

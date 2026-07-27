@@ -20,7 +20,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @author itcast
  * @Description：交易订单表 服务实现类
  */
 @Service

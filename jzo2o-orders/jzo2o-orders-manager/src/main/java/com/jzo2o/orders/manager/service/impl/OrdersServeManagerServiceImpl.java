@@ -62,12 +62,8 @@ import static com.jzo2o.orders.base.enums.ServeStatusEnum.*;
 import static com.jzo2o.orders.base.enums.ServeStatusEnum.SERVING;
 
 /**
- * <p>
- * 服务服务单 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-26
+* 服务服务单 服务实现类
+*
  */
 @Service
 @Slf4j

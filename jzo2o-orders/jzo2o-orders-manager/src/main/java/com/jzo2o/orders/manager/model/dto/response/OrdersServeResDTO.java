@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * @author itcast
  */
 @Data
 @ApiModel("服务分页查询相关模型")

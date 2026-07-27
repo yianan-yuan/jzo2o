@@ -12,12 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 订单表
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 订单表
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

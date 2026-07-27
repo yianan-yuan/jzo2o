@@ -7,7 +7,6 @@ package com.jzo2o.statemachine.core;
  * 2、接口实现类的bean名称规则为:状态机名称_状态变更事件名称
  * 例如：在实现类上添加 @Component("order_close_dispatching_order") order为状态机名称，close_dispatching_order为取消正常派单订单的事件名称
  *
- * @author itcast
  */
 public interface StatusChangeHandler<T extends StateMachineSnapshot> {
 

@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * @author itcast
  */
 public class Base64Utils {
 

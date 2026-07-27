@@ -10,12 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * <p>
- * 地址薄 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-06
+* 地址薄 服务类
+*
  */
 public interface IAddressBookService extends IService<AddressBook> {
     /**

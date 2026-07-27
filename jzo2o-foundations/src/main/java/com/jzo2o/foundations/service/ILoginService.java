@@ -4,7 +4,6 @@ import com.jzo2o.foundations.model.dto.request.LoginReqDTO;
 
 /**
  * 登录相关业务
- * @author itcast
  */
 public interface ILoginService {
     /**

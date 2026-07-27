@@ -5,7 +5,6 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.stereotype.Component;
 
 /**
- * @author itcast
  */
 @Component
 public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {

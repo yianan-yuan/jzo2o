@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 /**
  * 订单统计
  *
- * @author itcast
  * @create 2023/9/21 15:15
  **/
 @Api(tags = "运营端 - 订单统计相关接口")
@@ -43,7 +42,6 @@ public class OrdersStatisticsController {
     /**
      * 文件下载并且失败的时候返回json（默认失败了会返回一个有部分数据的Excel）
      *
-     * @since 2.1.1
      */
     @GetMapping("downloadStatistics")
     @ApiOperation("导出统计数据")

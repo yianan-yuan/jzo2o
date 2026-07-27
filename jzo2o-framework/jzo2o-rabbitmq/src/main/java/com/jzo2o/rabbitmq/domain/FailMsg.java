@@ -9,12 +9,8 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 
 /**
- * <p>
- * 失败消息
- * </p>
- *
- * @author itcast
- * @since 2023-07-11
+* 失败消息
+*
  */
 @Data
 @AllArgsConstructor

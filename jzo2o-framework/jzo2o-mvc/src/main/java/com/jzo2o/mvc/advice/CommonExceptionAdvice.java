@@ -25,7 +25,6 @@ import java.util.List;
 import static com.jzo2o.mvc.constants.HeaderConstants.BODY_PROCESSED;
 
 /**
- * @author itcast
  */
 @RestControllerAdvice
 @Slf4j

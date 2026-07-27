@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 响应工具
  *
- * @author itcast
  */
 public class ResponseUtils {
 

@@ -4,12 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jzo2o.foundations.model.domain.CityDirectory;
 
 /**
- * <p>
- * 城市编码表 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-07-04
+* 城市编码表 Mapper 接口
+*
  */
 public interface CityDirectoryMapper extends BaseMapper<CityDirectory> {
 

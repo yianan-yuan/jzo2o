@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * @author itcast
  */
 @RestController("operationOrdersController")
 @Api(tags = "运营端-订单相关接口")

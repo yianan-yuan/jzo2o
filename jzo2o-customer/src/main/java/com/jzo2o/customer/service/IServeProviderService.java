@@ -17,12 +17,8 @@ import com.jzo2o.customer.model.dto.response.ServeProviderListResDTO;
 import java.util.List;
 
 /**
- * <p>
- * 服务人员/机构表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-17
+* 服务人员/机构表 服务类
+*
  */
 public interface IServeProviderService extends IService<ServeProvider> {
 

@@ -10,12 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * <p>
- * 服务技能表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-18
+* 服务技能表 服务类
+*
  */
 public interface IServeSkillService extends IService<ServeSkill> {
 

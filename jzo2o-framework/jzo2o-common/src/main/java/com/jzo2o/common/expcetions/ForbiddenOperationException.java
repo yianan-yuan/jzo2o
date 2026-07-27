@@ -5,7 +5,6 @@ import com.jzo2o.common.constants.ErrorInfo;
 /**
  * 禁止操作异常
  *
- * @author itheima
  */
 public class ForbiddenOperationException extends CommonException {
 

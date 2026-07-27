@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * @author 86188
  */
 
 @RestController("workerServeProviderSettingsController")

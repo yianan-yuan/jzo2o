@@ -9,12 +9,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
- * <p>
- * 区域业务配置 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-21
+* 区域业务配置 服务类
+*
  */
 public interface IConfigRegionService extends IService<ConfigRegion> {
 

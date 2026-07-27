@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author itcast
  */
 @Slf4j
 public class UserContextInteceptor implements HandlerInterceptor {

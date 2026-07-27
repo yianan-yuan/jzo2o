@@ -25,7 +25,6 @@ import java.util.List;
  * 分页工具
  *
  * @ClassName PageUtils
- * @Author wusongsong
  * @Date 2022/6/27 17:19
  * @Version
  **/

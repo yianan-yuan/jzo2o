@@ -9,12 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- * 历史订单完成15天后同步到历史订单同步表中，通过canal同步到历史订单库中；1天后删除（删除条件当天数据和历史订单库中的订单数据数量一致） 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-21
+* 历史订单完成15天后同步到历史订单同步表中，通过canal同步到历史订单库中；1天后删除（删除条件当天数据和历史订单库中的订单数据数量一致） 服务类
+*
  */
 public interface IHistoryOrdersSyncService extends IService<HistoryOrdersSync> {
 

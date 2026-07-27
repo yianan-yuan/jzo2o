@@ -9,12 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-09-16
+*  Mapper 接口
+*
  */
 public interface CouponIssueMapper extends BaseMapper<CouponIssue> {
 

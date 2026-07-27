@@ -19,7 +19,6 @@ import java.util.Map;
 /**
  * 评价系统对接http工具类
  *
- * @author itcast
  * @create 2023/9/8 17:52
  **/
 @Component

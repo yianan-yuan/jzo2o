@@ -5,7 +5,6 @@ import com.jzo2o.trade.model.domain.Trading;
 /**
  * jsapi下单处理
  *
- * @author itcast
  */
 public interface JsapiPayHandler {
 

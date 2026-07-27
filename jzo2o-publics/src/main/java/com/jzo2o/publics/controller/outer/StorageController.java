@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
- * @author itcast
  */
 @Slf4j
 @RestController

@@ -3,7 +3,6 @@ package com.jzo2o.foundations.constants;
 /**
  * redis相关常量
  *
- * @author itcast
  * @create 2023/8/15 14:58
  **/
 public class RedisConstants {

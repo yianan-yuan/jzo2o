@@ -8,12 +8,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 银行账户响应体
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 银行账户响应体
+*
  */
 @Data
 @ApiModel("银行账户响应体")

@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 /**
  * 支付宝基础支付功能的实现
  *
- * @author zzj
  * @version 1.0
  */
 @Slf4j

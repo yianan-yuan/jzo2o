@@ -7,12 +7,8 @@ import org.apache.ibatis.annotations.Select;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 服务任务 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-09-14
+* 服务任务 Mapper 接口
+*
  */
 public interface HistoryOrdersServeSyncMapper extends BaseMapper<HistoryOrdersServeSync> {
 

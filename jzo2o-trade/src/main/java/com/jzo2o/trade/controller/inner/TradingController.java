@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @author zzj
  * @version 1.0
  */
 @RestController("innerTradingController")

@@ -7,7 +7,6 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * @author 86188
  */
 @Data
 @ApiModel("服务范围设置模型")

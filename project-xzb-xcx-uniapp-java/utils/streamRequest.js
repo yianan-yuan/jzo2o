@@ -1,13 +1,13 @@
 import { baseUrl } from './env.js';
 import { createSseParser } from './sseParser.js';
 
-const getAuthorization = () => (typeof globalThis.uni?.getStorageSync === 'function'
-  ? globalThis.uni.getStorageSync('token')
+const getAuthorization = () => (typeof uni?.getStorageSync === 'function'
+  ? uni.getStorageSync('token')
   : '');
 
 export const streamRequest = ({ url, data, onEvent, onError, onComplete }) => {
   const parser = createSseParser(onEvent || (() => {}));
-  const requestTask = globalThis.uni.request({
+  const requestTask = uni.request({
     url: `${baseUrl}${url}`,
     data,
     method: 'POST',

@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * @author itcast
  */
 @Data
 @ApiModel("微信小程序登录模型")

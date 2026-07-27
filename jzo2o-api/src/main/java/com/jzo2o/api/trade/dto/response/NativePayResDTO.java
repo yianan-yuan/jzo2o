@@ -6,7 +6,6 @@ import lombok.Data;
 /**
  * 扫码支付响应数据
  *
- * @author zzj
  * @version 1.0
  */
 @Data

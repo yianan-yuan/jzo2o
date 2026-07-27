@@ -6,12 +6,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 机构认证信息表
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 机构认证信息表
+*
  */
 @Data
 public class CertificationStatusDTO implements Serializable {

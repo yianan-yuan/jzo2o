@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 class CandidateSelectionServiceTest {
 
-    private final ModelProvider provider = mock(ModelProvider.class);
+    private final ModelProvider provider = mock(ModelProvider.class, CALLS_REAL_METHODS);
     private final AigcProperties properties = new AigcProperties();
     private CandidateSelectionService service;
 
@@ -129,6 +130,17 @@ class CandidateSelectionServiceTest {
 
         assertThat(result).extracting(SelectedService::getServeId).containsExactly(2L);
         verify(provider).complete(anyList(), eq(0D), any());
+    }
+
+    @Test
+    void shouldFallbackToRealCandidatesWhenModelReturnsEmptySelection() {
+        when(provider.complete(anyList(), anyDouble(), any())).thenReturn("{\"selected\":[]}");
+
+        List<SelectedService> result = service.select(profile(), candidates(1L, 2L), new CancellationToken());
+
+        assertThat(result).extracting(SelectedService::getServeId).containsExactly(1L, 2L);
+        assertThat(result).extracting(SelectedService::getReason)
+                .containsOnly("根据你的需求匹配到该服务");
     }
 
     @Test

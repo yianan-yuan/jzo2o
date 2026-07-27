@@ -9,12 +9,8 @@ import com.jzo2o.orders.manager.service.IBreachRecordService;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- * 违约记录 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-08-02
+* 违约记录 服务实现类
+*
  */
 @Service
 public class BreachRecordServiceImpl extends ServiceImpl<BreachRecordMapper, BreachRecord> implements IBreachRecordService {

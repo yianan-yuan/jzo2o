@@ -25,12 +25,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * 服务人员/机构附属信息 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-20
+* 服务人员/机构附属信息 服务实现类
+*
  */
 @Service
 public class ServeProviderSettingsServiceImpl extends ServiceImpl<ServeProviderSettingsMapper, ServeProviderSettings> implements IServeProviderSettingsService {

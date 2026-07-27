@@ -241,7 +241,8 @@
             "scope.userLocation" : {
                 "desc" : "获取您的位置信息"
             }
-        }
+        },
+        "requiredPrivateInfos" : ["getLocation"]
     },
     "vueVersion" : "3",
     "h5" : {

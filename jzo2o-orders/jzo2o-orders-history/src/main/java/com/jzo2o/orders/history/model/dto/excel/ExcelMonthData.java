@@ -7,7 +7,6 @@ import java.util.List;
 /**
  * 导出表格月度数据
  *
- * @author itcast
  * @create 2023/9/21 20:33
  **/
 @Data

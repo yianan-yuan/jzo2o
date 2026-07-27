@@ -6,12 +6,8 @@ import com.jzo2o.orders.base.model.domain.OrdersRefund;
 import java.util.List;
 
 /**
- * <p>
- * 订单退款表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-09-07
+* 订单退款表 服务类
+*
  */
 public interface IOrdersRefundService extends IService<OrdersRefund> {
 

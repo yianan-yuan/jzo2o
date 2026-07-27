@@ -12,7 +12,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 自动发放优惠券任务
  * @date 2024/9/23 19:49

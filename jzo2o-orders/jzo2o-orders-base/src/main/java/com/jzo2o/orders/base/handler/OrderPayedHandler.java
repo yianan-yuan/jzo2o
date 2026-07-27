@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 /**
  * 订单支付成功处理器
  *
- * @author itcast
  * @create 2023/8/17 18:08
  **/
 @Slf4j

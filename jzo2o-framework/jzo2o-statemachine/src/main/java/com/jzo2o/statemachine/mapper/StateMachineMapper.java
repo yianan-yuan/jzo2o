@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 状态持久化数据层
  *
- * @author itcast
  * @create 2023/8/5 15:36
  **/
 @Mapper

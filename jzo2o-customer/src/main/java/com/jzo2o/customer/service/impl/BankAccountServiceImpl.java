@@ -9,12 +9,8 @@ import com.jzo2o.customer.service.IBankAccountService;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- * 银行账户 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 银行账户 服务实现类
+*
  */
 @Service
 public class BankAccountServiceImpl extends ServiceImpl<BankAccountMapper, BankAccount> implements IBankAccountService {

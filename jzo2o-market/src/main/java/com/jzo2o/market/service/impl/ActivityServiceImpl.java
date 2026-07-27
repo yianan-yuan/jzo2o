@@ -31,12 +31,8 @@ import static com.jzo2o.market.constants.RedisConstants.RedisKey.*;
 import static com.jzo2o.market.enums.ActivityStatusEnum.*;
 
 /**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-16
+* 服务实现类
+*
  */
 @Service
 public class ActivityServiceImpl extends ServiceImpl<ActivityMapper, Activity> implements IActivityService {

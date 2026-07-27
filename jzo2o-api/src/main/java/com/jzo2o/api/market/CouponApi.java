@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * 内部接口 - 优惠券相关接口
  *
- * @author Mr.M
  */
 @FeignClient(contextId = "jzo2o-market", value = "jzo2o-market", path = "/market/inner/coupon")
 public interface CouponApi {

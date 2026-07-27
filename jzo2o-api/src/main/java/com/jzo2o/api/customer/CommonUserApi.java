@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 内部接口 - 普通用户相关接口
  *
- * @author itcast
  */
 @FeignClient(contextId = "jzo2o-customer", value = "jzo2o-customer", path = "/customer/inner/common-user")
 public interface CommonUserApi {

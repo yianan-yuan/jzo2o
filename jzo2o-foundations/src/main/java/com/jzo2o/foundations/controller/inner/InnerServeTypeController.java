@@ -17,12 +17,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * <p>
- * 内部接口 - 服务类型相关接口
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 内部接口 - 服务类型相关接口
+*
  */
 @RestController
 @RequestMapping("/inner/serve-type")

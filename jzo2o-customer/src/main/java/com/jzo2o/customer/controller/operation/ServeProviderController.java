@@ -19,12 +19,8 @@ import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 
 /**
- * <p>
- * 服务人员/机构相关接口
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 服务人员/机构相关接口
+*
  */
 @Validated
 @RestController("operationServeProviderController")

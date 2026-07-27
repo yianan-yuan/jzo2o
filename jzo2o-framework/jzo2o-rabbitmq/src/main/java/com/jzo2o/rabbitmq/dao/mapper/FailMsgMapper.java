@@ -6,12 +6,8 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 /**
- * <p>
- * 失败消息 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-07-11
+* 失败消息 Mapper 接口
+*
  */
 public interface FailMsgMapper {
     String BASE_COLUMNS = " id,exchange,routing_key as 'routingKey',msg,reason,delay_msg_execute_time as delayMsgExecuteTime,create_time as createTime, update_time as updateTime,next_fetch_time as nextFetchTime ";

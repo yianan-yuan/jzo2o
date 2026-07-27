@@ -33,12 +33,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 服务实现类
+*
  */
 @Service
 public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements IServeService {

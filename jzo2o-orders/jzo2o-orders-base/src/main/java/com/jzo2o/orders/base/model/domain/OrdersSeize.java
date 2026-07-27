@@ -10,12 +10,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 抢单池
- * </p>
- *
- * @author itcast
- * @since 2023-08-15
+* 抢单池
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

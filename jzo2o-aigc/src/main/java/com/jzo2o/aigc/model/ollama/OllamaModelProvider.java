@@ -43,12 +43,28 @@ public class OllamaModelProvider implements ModelProvider {
     public String complete(List<ModelMessage> messages,
                            double temperature,
                            CancellationToken cancellationToken) {
+        return complete(messages, temperature, cancellationToken, null);
+    }
+
+    @Override
+    public String completeJson(List<ModelMessage> messages,
+                               double temperature,
+                               CancellationToken cancellationToken,
+                               JsonNode schema) {
+        Objects.requireNonNull(schema, "schema");
+        return complete(messages, temperature, cancellationToken, schema);
+    }
+
+    private String complete(List<ModelMessage> messages,
+                            double temperature,
+                            CancellationToken cancellationToken,
+                            JsonNode schema) {
         requireArguments(messages, cancellationToken);
         if (cancellationToken.isCancelled()) {
             return "";
         }
         try {
-            HttpResponse<InputStream> response = send(messages, false, temperature);
+            HttpResponse<InputStream> response = send(messages, false, temperature, schema);
             try (InputStream body = response.body()) {
                 ensureSuccessful(response.statusCode());
                 cancellationToken.onCancel(() -> closeQuietly(body));
@@ -96,7 +112,7 @@ public class OllamaModelProvider implements ModelProvider {
         }
         try {
             HttpResponse<InputStream> response = send(
-                    messages, true, properties.getModel().getTemperature());
+                    messages, true, properties.getModel().getTemperature(), null);
             try (InputStream body = response.body();
                  BufferedReader reader = new BufferedReader(
                          new InputStreamReader(body, StandardCharsets.UTF_8))) {
@@ -135,7 +151,8 @@ public class OllamaModelProvider implements ModelProvider {
 
     private HttpResponse<InputStream> send(List<ModelMessage> messages,
                                            boolean stream,
-                                           double temperature) throws IOException, InterruptedException {
+                                           double temperature,
+                                           JsonNode schema) throws IOException, InterruptedException {
         ObjectNode root = objectMapper.createObjectNode();
         root.put("model", properties.getModel().getModel());
         ArrayNode requestMessages = root.putArray("messages");
@@ -145,6 +162,9 @@ public class OllamaModelProvider implements ModelProvider {
             requestMessage.put("content", message.getContent());
         }
         root.put("stream", stream);
+        if (schema != null) {
+            root.set("format", schema);
+        }
         ObjectNode options = root.putObject("options");
         options.put("temperature", temperature);
         options.put("num_predict", properties.getModel().getMaxTokens());

@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * 内部接口 - 服务项相关接口
  *
- * @author itcast
  */
 @FeignClient(contextId = "jzo2o-foundations", value = "jzo2o-foundations", path = "/foundations/inner/serve-item")
 public interface ServeItemApi {

@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * 首页查询相关功能
  *
- * @author itcast
  * @create 2023/8/21 10:55
  **/
 public interface HomeService {

@@ -22,7 +22,6 @@ import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author itcast
  */
 @Slf4j
 @Service

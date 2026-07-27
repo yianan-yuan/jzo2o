@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 /**
  * 普通用户相关接口
  *
- * @author itcast
  * @create 2023/7/7 19:34
  **/
 @RestController("consumerCommonUserController")

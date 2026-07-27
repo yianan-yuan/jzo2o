@@ -34,12 +34,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * <p>
- * 服务表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 服务表 服务实现类
+*
  */
 @Service
 public class ServeItemServiceImpl extends ServiceImpl<ServeItemMapper, ServeItem> implements IServeItemService {

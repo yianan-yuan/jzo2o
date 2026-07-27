@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 直接用map接收数据
  *
- * @author Jiaju Zhuang
  */
 @Slf4j
 public class NoModelDataListener extends AnalysisEventListener<Map<Integer, String>> {

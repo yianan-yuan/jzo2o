@@ -50,12 +50,8 @@ import java.util.stream.Collectors;
 import static com.jzo2o.orders.base.constants.FieldConstants.SORT_BY;
 
 /**
- * <p>
- * 订单表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-10
+* 订单表 服务实现类
+*
  */
 @Slf4j
 @Service

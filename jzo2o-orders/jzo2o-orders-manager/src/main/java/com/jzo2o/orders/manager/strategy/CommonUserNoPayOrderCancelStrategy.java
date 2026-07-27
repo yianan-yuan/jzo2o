@@ -18,7 +18,6 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description c端用户取消待支付订单策略类
  * @date 2024/11/11 10:18

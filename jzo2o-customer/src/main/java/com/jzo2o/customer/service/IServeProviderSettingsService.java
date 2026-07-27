@@ -11,12 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>
- * 服务人员/机构附属信息 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-20
+* 服务人员/机构附属信息 服务类
+*
  */
 public interface IServeProviderSettingsService extends IService<ServeProviderSettings> {
 

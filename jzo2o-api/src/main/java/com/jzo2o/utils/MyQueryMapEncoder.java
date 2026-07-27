@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * 请求参数序列化
- * @author itcast
  */
 public class MyQueryMapEncoder implements QueryMapEncoder {
     private static final ObjectMapper objectMapper = new ObjectMapper();

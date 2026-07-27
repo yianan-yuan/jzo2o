@@ -7,12 +7,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- * 优惠券核销表 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-09-22
+* 优惠券核销表 服务实现类
+*
  */
 @Service
 public class CouponWriteOffServiceImpl extends ServiceImpl<CouponWriteOffMapper, CouponWriteOff> implements ICouponWriteOffService {

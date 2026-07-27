@@ -8,7 +8,6 @@ import lombok.Data;
 /**
  * 机构下属服务人员分页查询
  *
- * @author itcast
  * @create 2023/7/18 20:42
  **/
 @Data

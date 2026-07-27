@@ -10,12 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 银行账户
- * </p>
- *
- * @author itcast
- * @since 2023-09-06
+* 银行账户
+*
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import static com.jzo2o.orders.base.constants.RedisConstants.RedisKey.DISPATCH_LIST;
 
 /**
- * @author 86188
  */
 @Component
 public class OrdersDispatchSyncHandler extends AbstractCanalRabbitMqMsgListener<OrdersDispatch> {

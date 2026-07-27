@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 /**
  * 交易前置处理接口
  *
- * @author zzj
  * @version 1.0
  */
 @Component

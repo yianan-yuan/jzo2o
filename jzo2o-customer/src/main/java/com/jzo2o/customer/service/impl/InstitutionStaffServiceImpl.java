@@ -30,12 +30,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>
- * 机构下属服务人员 服务实现类
- * </p>
- *
- * @author itcast
- * @since 2023-07-18
+* 机构下属服务人员 服务实现类
+*
  */
 @Service
 public class InstitutionStaffServiceImpl extends ServiceImpl<InstitutionStaffMapper, InstitutionStaff> implements IInstitutionStaffService {

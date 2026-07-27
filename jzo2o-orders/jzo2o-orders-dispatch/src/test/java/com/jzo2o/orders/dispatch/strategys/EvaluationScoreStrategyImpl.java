@@ -1,7 +1,6 @@
 //package com.jzo2o.orders.dispatch.strategys;
 //
 ///**
-// * @author Mr.M
 // * @version 1.0
 // * @description 先评分优先，评分相同再判断接单数
 // * @date 2023/11/24 12:00

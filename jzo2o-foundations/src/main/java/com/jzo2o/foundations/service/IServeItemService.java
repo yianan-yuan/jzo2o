@@ -12,12 +12,8 @@ import com.jzo2o.foundations.model.dto.request.ServeItemUpsertReqDTO;
 import java.util.List;
 
 /**
- * <p>
- * 服务表 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-07-03
+* 服务表 服务类
+*
  */
 public interface IServeItemService extends IService<ServeItem> {
     /**

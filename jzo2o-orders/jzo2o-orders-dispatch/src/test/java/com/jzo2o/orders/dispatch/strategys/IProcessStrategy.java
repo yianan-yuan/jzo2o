@@ -5,7 +5,6 @@ import com.jzo2o.orders.dispatch.model.dto.ServeProviderDTO;
 import java.util.List;
 
 /**
- * @author Mr.M
  * @version 1.0
  * @description 派单策略接口
  * @date 2024/11/20 15:18

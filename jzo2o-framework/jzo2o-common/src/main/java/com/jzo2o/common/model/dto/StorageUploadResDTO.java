@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 /**
  * 文件上传响应值
  *
- * @author itcast
  * @create 2023/7/6 15:29
  **/
 @Data

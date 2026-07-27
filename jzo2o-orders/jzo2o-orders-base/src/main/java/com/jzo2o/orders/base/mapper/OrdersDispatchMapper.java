@@ -8,12 +8,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * <p>
- * 派单池 Mapper 接口
- * </p>
- *
- * @author itcast
- * @since 2023-08-08
+* 派单池 Mapper 接口
+*
  */
 public interface OrdersDispatchMapper extends BaseMapper<OrdersDispatch> {
 

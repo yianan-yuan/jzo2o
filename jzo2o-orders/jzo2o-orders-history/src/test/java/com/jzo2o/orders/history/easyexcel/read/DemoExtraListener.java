@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 /**
  * 读取单元格的批注
  *
- * @author Jiaju Zhuang
  **/
 @Slf4j
 public class DemoExtraListener implements ReadListener<DemoExtraData> {

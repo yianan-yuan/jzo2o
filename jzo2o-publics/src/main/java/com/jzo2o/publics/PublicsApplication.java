@@ -7,7 +7,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 /**
  * 通用服务启动类
  *
- * @author itcast
  * @create 2023/8/23 17:14
  **/
 @Slf4j

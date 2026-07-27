@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * 运营端首页数据模型
  *
- * @author itcast
  * @create 2023/9/21 15:21
  **/
 @Data

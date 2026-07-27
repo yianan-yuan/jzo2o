@@ -11,12 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * <p>
- * 抢单池 服务类
- * </p>
- *
- * @author itcast
- * @since 2023-08-15
+* 抢单池 服务类
+*
  */
 @Service
 public interface IOrdersSeizeService extends IService<OrdersSeize> {
