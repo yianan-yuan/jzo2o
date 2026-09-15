@@ -1,0 +1,14 @@
+# Local IDE and UniApp project state
+.idea/
+.hbuilderx/
+.vite/
+
+# Dependencies and generated output
+node_modules/
+unpackage/
+
+# Machine-specific settings and logs
+project.private.config.json
+.env
+.env.*
+*.log

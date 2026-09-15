@@ -1,0 +1,144 @@
+@import url('@/styles/theme.scss');
+@import '@/styles/warm-business.scss';
+.loginBox {
+  background-color: var(--warm-page-bg);
+  height: 100vh;
+  .brandLockup {
+    text-align: center;
+    margin-top: 204rpx;
+  }
+  .brandMark {
+    width: 104rpx;
+    height: 104rpx;
+    margin: 0 auto 30rpx;
+    border-radius: 34rpx 34rpx 34rpx 10rpx;
+    background: var(--warm-primary);
+    box-shadow: 0 18rpx 30rpx rgba(245, 103, 72, 0.2);
+    color: var(--neutral-color-white);
+    font-size: 56rpx;
+    font-weight: 700;
+    line-height: 104rpx;
+  }
+  .brandName {
+    color: var(--neutral-color-main);
+    font-size: 52rpx;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 4rpx;
+  }
+  .brandTagline {
+    margin-top: 16rpx;
+    color: var(--neutral-color-font);
+    font-size: 26rpx;
+  }
+  .open-dialog {
+    height: 88rpx;
+    background: var(--warm-primary);
+    border-radius: 44rpx;
+    color: var(--neutral-color-white);
+    text-align: center;
+    line-height: 88rpx;
+    margin: 228rpx 46rpx 0;
+  }
+  .servicePop {
+    :deep(.uni-popup__wrapper) {
+      max-height: 72vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--neutral-color-white) !important;
+      border-radius: 24rpx 24rpx 0 0;
+      padding: 48rpx 33rpx 36rpx 39rpx;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      border-radius: 24rpx 24rpx 0 0;
+      image {
+        height: 35rpx;
+        width: 35rpx;
+      }
+      .title {
+        font-family: PingFangSC-Medium;
+        font-weight: 500;
+        color: var(--neutral-color-main);
+        font-size: 30rpx;
+        margin: 0 auto;
+      }
+    }
+    .agreementBody {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+    .content {
+      font-size: 28rpx;
+      font-family: PingFangSC;
+      margin-top: 35rpx;
+      .tips {
+        margin-top: 50rpx;
+        color: var(--neutral-color-main);
+      }
+      text {
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+    .agreementActions {
+      display: flex;
+      flex-shrink: 0;
+      padding: 42rpx 6rpx 0;
+      justify-content: space-between;
+      .btn {
+        width: 48%;
+        height: 88rpx;
+        line-height: 88rpx;
+        border: 2rpx solid var(--essential-color-red);
+        border-radius: 44rpx;
+        font-size: 30rpx;
+      }
+    }
+  }
+  //冻结弹窗提示
+  .freeze {
+    .dialog {
+      width: 556rpx;
+      background-color: var(--neutral-color-white);
+      border-radius: 24rpx;
+      position: relative;
+      .content {
+        // height: 225rpx;
+        text-align: center;
+        font-size: 32rpx;
+        color: var(--neutral-color-main);
+        padding-top: 38rpx;
+        padding-bottom: 40rpx;
+      }
+      .reason {
+        font-size: 28rpx;
+        padding-bottom: 20rpx;
+        color: #595959;
+        padding-left: 63rpx;
+      }
+      .phone {
+        font-size: 28rpx;
+        padding-bottom: 29rpx;
+        color: #595959;
+        padding-left: 63rpx;
+      }
+      .phoneLabel {
+        font-size: 28rpx;
+        color: #595959;
+        padding-left: 63rpx;
+      }
+      .footer {
+        font-size: 32rpx;
+        color: var(--essential-color-red);
+        text-align: center;
+        border-top: 2rpx solid var(--neutral-color-border);
+        line-height: 99rpx;
+      }
+    }
+  }
+}

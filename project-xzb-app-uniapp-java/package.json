@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-app": "3.0.0-alpha-5000120260205002",
+    "@dcloudio/uni-components": "3.0.0-alpha-5000120260205002",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5000120260205002",
+    "sass": "^1.102.0",
+    "vite": "5.2.8",
+    "vue": "3.4.21"
+  }
+}

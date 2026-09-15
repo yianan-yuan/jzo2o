@@ -1,0 +1,40 @@
+# IDE
+.idea/
+.vscode/
+.hbuilderx/
+*.iml
+
+# Java build output
+**/target/
+*.class
+*.jar
+*.war
+
+# JavaScript dependencies and build output
+**/node_modules/
+**/dist/
+**/unpackage/
+
+# Logs and temporary files
+*.log
+logs/
+log/
+.cache/
+
+# Local credentials and environment overrides
+.env
+.env.*
+**/project.private.config.json
+**/bootstrap*.yml
+**/bootstrap*.yaml
+**/application*.yml
+**/application*.yaml
+**/shardingsphere-jdbc-*.yml
+**/shardingsphere-jdbc-*.yaml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Private course/workspace links
+**/课程文档.txt

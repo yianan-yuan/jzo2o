@@ -1,0 +1,404 @@
+@import url('@/styles/theme.scss');
+
+.homePage {
+  min-height: 100vh;
+  padding-bottom: 150rpx;
+  background: var(--warm-page-bg);
+}
+
+.homeHero {
+  padding: 112rpx 30rpx 38rpx;
+  color: #fff;
+  background: linear-gradient(145deg, #f89b78 0%, var(--warm-primary) 100%);
+  border-radius: 0 0 44rpx 44rpx;
+}
+
+.homeHeroTitle {
+  font-size: 40rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+.homeHeroSubtitle {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  opacity: 0.88;
+}
+
+.homeSearch {
+  display: flex;
+  align-items: center;
+  height: 84rpx;
+  margin-top: 28rpx;
+  padding: 0 24rpx;
+  color: var(--warm-text-muted);
+  background: var(--warm-surface);
+  border-radius: 42rpx;
+  box-shadow: 0 14rpx 30rpx rgba(149, 61, 31, 0.16);
+}
+
+.city {
+  display: flex;
+  align-items: center;
+  max-width: 210rpx;
+  font-size: 26rpx;
+  color: var(--warm-text);
+}
+
+.city image,
+.input-uni-icon {
+  width: 30rpx;
+  height: 30rpx;
+}
+
+.city image {
+  margin-right: 8rpx;
+}
+
+.address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchDivider {
+  width: 1rpx;
+  height: 30rpx;
+  margin: 0 20rpx;
+  background: var(--warm-line);
+}
+
+.input-uni-icon {
+  margin-right: 12rpx;
+  opacity: 0.55;
+}
+
+.searchPlaceholder {
+  font-size: 26rpx;
+  color: var(--warm-text-muted);
+}
+
+.homeContent {
+  padding: 24rpx 24rpx 0;
+}
+
+.promotionBanner {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 206rpx;
+  border-radius: var(--warm-radius-lg);
+  box-shadow: var(--warm-shadow);
+}
+
+.promotionBanner image {
+  width: 100%;
+  height: 100%;
+}
+
+.promotionBanner::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(90deg, rgba(255, 247, 240, 0.98) 0%, rgba(255, 244, 235, 0.82) 43%, rgba(255, 244, 235, 0.05) 74%);
+}
+
+.promotionCopy {
+  position: absolute;
+  z-index: 1;
+  top: 26rpx;
+  left: 28rpx;
+  color: var(--warm-text);
+}
+
+.promotionLabel {
+  display: inline-block;
+  padding: 5rpx 12rpx;
+  color: #d75d3d;
+  font-size: 20rpx;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 999rpx;
+}
+
+.promotionTitle {
+  margin-top: 8rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.promotionPrice {
+  display: inline-block;
+  margin-top: -4rpx;
+  color: var(--warm-primary);
+  font-size: 54rpx;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.promotionHint {
+  margin-top: 4rpx;
+  color: var(--warm-text-muted);
+  font-size: 20rpx;
+}
+
+.tips {
+  display: flex;
+  justify-content: space-between;
+  gap: 14rpx;
+  margin: 20rpx 0 32rpx;
+  padding: 16rpx 18rpx;
+  color: var(--warm-primary);
+  font-size: 20rpx;
+  background: var(--warm-primary-soft);
+  border-radius: var(--warm-radius-sm);
+}
+
+.tips > view {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.tips image {
+  width: 22rpx;
+  height: 22rpx;
+  margin-right: 6rpx;
+}
+
+.couponBenefitCard {
+  display: flex;
+  align-items: center;
+  min-height: 156rpx;
+  margin-bottom: 32rpx;
+  padding: 22rpx 28rpx;
+  overflow: hidden;
+  color: var(--warm-text);
+  background: linear-gradient(120deg, #fff4ec 0%, #ffe4d6 100%);
+  border: 1rpx solid #ffd8c5;
+  border-radius: var(--warm-radius-lg);
+  box-shadow: var(--warm-shadow);
+}
+
+.couponBenefitCopy {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.couponBenefitLabel {
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  color: #d65736;
+  font-size: 20rpx;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 999rpx;
+}
+
+.couponBenefitTitle {
+  margin-top: 8rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.couponBenefitDesc {
+  margin-top: 6rpx;
+  color: var(--warm-text-muted);
+  font-size: 21rpx;
+}
+
+.couponBenefitAction {
+  display: inline-block;
+  margin-top: 12rpx;
+  padding: 7rpx 18rpx;
+  color: #fff;
+  font-size: 21rpx;
+  font-weight: 600;
+  background: var(--warm-primary);
+  border-radius: 999rpx;
+}
+
+.couponBenefitImage {
+  width: 176rpx;
+  height: 156rpx;
+  margin: -16rpx -12rpx -16rpx 10rpx;
+}
+
+.empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22rpx;
+  padding: 72rpx 36rpx;
+  color: var(--warm-text-muted);
+  font-size: 26rpx;
+  text-align: center;
+  background: var(--warm-surface);
+  border-radius: var(--warm-radius-lg);
+  box-shadow: var(--warm-shadow);
+}
+
+.empty-box image {
+  width: 300rpx;
+  height: 250rpx;
+}
+
+.empty-box button,
+.reservation button {
+  margin: 0;
+  color: #fff;
+  font-size: 24rpx;
+  line-height: 64rpx;
+  background: var(--warm-primary);
+  border: 0;
+  border-radius: 32rpx;
+}
+
+.empty-box button {
+  min-width: 280rpx;
+}
+
+.serviceSection,
+.recommendSection {
+  margin-top: 36rpx;
+}
+
+.sectionTitle {
+  position: relative;
+  padding-left: 18rpx;
+  color: var(--warm-text);
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.sectionTitle::before {
+  position: absolute;
+  top: 8rpx;
+  left: 0;
+  width: 6rpx;
+  height: 28rpx;
+  content: '';
+  background: var(--warm-primary);
+  border-radius: 4rpx;
+}
+
+.serviceCategoryList {
+  margin-top: 22rpx;
+  white-space: nowrap;
+}
+
+.serviceCategory {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: 116rpx;
+  margin-right: 18rpx;
+  padding: 18rpx 10rpx;
+  color: var(--warm-text);
+  font-size: 22rpx;
+  white-space: normal;
+  background: var(--warm-surface);
+  border-radius: var(--warm-radius-md);
+  box-shadow: var(--warm-shadow);
+}
+
+.serviceCategory image {
+  width: 52rpx;
+  height: 52rpx;
+  margin-bottom: 10rpx;
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20rpx;
+  margin-top: 22rpx;
+}
+
+.serviceGroup {
+  grid-column: span 2;
+}
+
+.serviceGroupTitle {
+  margin: 8rpx 0 14rpx;
+  color: var(--warm-text-muted);
+  font-size: 24rpx;
+}
+
+.serviceItems {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20rpx;
+}
+
+.serviceItem {
+  display: flex;
+  align-items: center;
+  min-height: 112rpx;
+  padding: 18rpx;
+  color: var(--warm-text);
+  font-size: 26rpx;
+  background: var(--warm-surface);
+  border: 1rpx solid var(--warm-line);
+  border-radius: var(--warm-radius-lg);
+  box-shadow: var(--warm-shadow);
+}
+
+.serviceItem image {
+  width: 54rpx;
+  height: 54rpx;
+  margin-right: 14rpx;
+}
+
+.recommendCard {
+  overflow: hidden;
+  margin-top: 22rpx;
+  background: var(--warm-surface);
+  border-radius: var(--warm-radius-lg);
+  box-shadow: var(--warm-shadow);
+}
+
+.tag {
+  display: inline-block;
+  margin: 20rpx 0 0 20rpx;
+  padding: 8rpx 16rpx;
+  color: var(--warm-primary);
+  font-size: 22rpx;
+  background: var(--warm-primary-soft);
+  border-radius: 999rpx;
+}
+
+.cardImg {
+  width: 100%;
+  margin-top: 16rpx;
+  display: block;
+}
+
+.cardName {
+  padding: 20rpx 20rpx 0;
+  color: var(--warm-text);
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.reservation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+}
+
+.servicePrice {
+  color: var(--warm-primary);
+  font-size: 26rpx;
+}
+
+.servicePrice text {
+  margin-left: 4rpx;
+  font-size: 38rpx;
+  font-weight: 700;
+}
+
+.reservation button {
+  width: 168rpx;
+}

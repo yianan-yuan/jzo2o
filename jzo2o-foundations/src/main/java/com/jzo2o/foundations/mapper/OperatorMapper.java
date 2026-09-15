@@ -1,0 +1,17 @@
+package com.jzo2o.foundations.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jzo2o.foundations.model.domain.Operator;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
+/**
+* 运营人员 Mapper 接口
+*
+ */
+public interface OperatorMapper extends BaseMapper<Operator> {
+
+    @Select("select * from operator")
+    List<Operator> queryAll();
+}

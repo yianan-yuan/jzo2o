@@ -1,0 +1,64 @@
+// Imported by individual business pages. Keep selectors page-local through each
+// component's scoped style block; do not import this file from App.vue.
+
+.searchBox,
+.content,
+.main,
+.commit,
+.loginBox,
+.service,
+.airMaintenance,
+.messagePage {
+  min-height: 100vh;
+  background: var(--warm-page-bg);
+}
+
+.input-view,
+.nav-bar-input,
+.input,
+.seachBox,
+.uni-searchbar__box {
+  background: var(--warm-surface);
+  border-color: var(--warm-line);
+  border-radius: var(--warm-radius-md);
+}
+
+.card,
+.cardBox,
+.address-item,
+.cardsBox,
+.payBox,
+.serviceBox,
+.messageItem,
+.loginPanel,
+.historyBox {
+  background: var(--warm-surface);
+  border: 1rpx solid var(--warm-line);
+  border-radius: var(--warm-radius-lg);
+  box-shadow: var(--warm-shadow);
+}
+
+.btn,
+.button,
+.pageFoot button,
+.reservation button {
+  color: #fff;
+  background: var(--warm-primary);
+  border: 0;
+  border-radius: var(--warm-radius-md);
+}
+
+.tag,
+.tagBox,
+.status {
+  color: var(--warm-primary);
+  background: var(--warm-primary-soft);
+  border: 1rpx solid rgba(240, 108, 72, 0.18);
+  border-radius: 999rpx;
+}
+
+.price,
+.num,
+.priceNum {
+  color: var(--warm-primary);
+}
